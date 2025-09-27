@@ -55,13 +55,13 @@ UnitToolkit/
 │        ├─ MainWindow.axaml            # 5 tabs (Units, Currency, Password/Random, BMI, Data Size)
 │        └─ MainWindow.axaml.cs         # thin handlers calling Core services
 └─ tests/
-└─ UnitToolkit.Tests/                # xUnit tests for all 5 services
-├─ UnitToolkit.Tests.csproj
-├─ UnitConverterTests.cs
-├─ CurrencyCalculatorTests.cs
-├─ PasswordGeneratorTests.cs
-├─ BmiCalculatorTests.cs
-└─ DataSizeConverterTests.cs
+   └─ UnitToolkit.Tests/                # xUnit tests for all 5 services
+      ├─ UnitToolkit.Tests.csproj
+      ├─ UnitConverterTests.cs
+      ├─ CurrencyCalculatorTests.cs
+      ├─ PasswordGeneratorTests.cs
+      ├─ BmiCalculatorTests.cs
+      └─ DataSizeConverterTests.cs
 ```
 
 ---
