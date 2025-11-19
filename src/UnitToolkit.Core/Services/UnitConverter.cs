@@ -1,12 +1,49 @@
 using System;
+using System.Collections.Generic;
 
 namespace UnitToolkit.Core.Services;
 
+public enum ConversionType
+{
+    Temperature,
+    Length,
+    Mass
+}
+
 public class UnitConverter
 {
+    public IReadOnlyList<string> TemperatureUnits { get; } = new[] { "C", "F", "K" };
+    public IReadOnlyList<string> LengthUnits { get; } = new[] { "m", "cm", "km" };
+    public IReadOnlyList<string> MassUnits { get; } = new[] { "kg", "g", "lb" };
+
+    /// <summary>
+    /// Convert a numeric value between units within a given family.
+    /// </summary>
+    /// <param name="type">Conversion type (Temperature, Length, or Mass).</param>
+    /// <param name="value">Source numeric value.</param>
+    /// <param name="from">Source unit symbol (e.g., "C", "m", "kg").</param>
+    /// <param name="to">Target unit symbol (e.g., "F", "cm", "lb").</param>
+    /// <returns>Converted numeric value in the target unit.</returns>
+    /// <exception cref="ArgumentException">
+    /// Thrown if the unit symbols are unknown.
+    /// </exception>
+    public double Convert(ConversionType type, double value, string from, string to)
+    {
+        from = from.Trim().ToLowerInvariant();
+        to   = to.Trim().ToLowerInvariant();
+
+        return type switch
+        {
+            ConversionType.Temperature => ConvertTemperature(value, from, to),
+            ConversionType.Length      => ConvertLength(value, from, to),
+            ConversionType.Mass        => ConvertMass(value, from, to),
+            _ => throw new ArgumentException("Unknown conversion type.")
+        };
+    }
+
     /// <summary>
     /// Convert a numeric value between units within a given family
-    /// (temperature/length/mass).
+    /// (temperature/length/mass). String-based wrapper for CLI compatibility.
     /// </summary>
     /// <param name="type">
     /// Conversion family. Accepted aliases: "temperature"|"temp",
