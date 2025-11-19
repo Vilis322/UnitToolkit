@@ -30,9 +30,12 @@
         <Button Grid.Row="3" Grid.Column="1" Margin="12" Padding="12,6"
                 HorizontalAlignment="Left" Command="{Binding ConvertUnitsCommand}">Convert</Button>
 
-        <TextBlock Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2"
-                   Margin="12" FontSize="16" TextWrapping="Wrap"
-                   Text="{Binding UnitResult}"/>
+        <StackPanel Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Margin="12">
+          <TextBlock FontSize="16" TextWrapping="Wrap" Text="{Binding UnitResult}"/>
+          <TextBlock FontSize="14" TextWrapping="Wrap" Foreground="Red"
+                     Text="{Binding UnitErrorMessage}"
+                     IsVisible="{Binding UnitErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+        </StackPanel>
       </Grid>
     </TabItem>
 
@@ -50,9 +53,12 @@
         <Button Grid.Row="2" Grid.Column="1" Margin="12" Padding="12,6"
                 HorizontalAlignment="Left" Command="{Binding ConvertCurrencyCommand}">Convert</Button>
 
-        <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
-                   Margin="12" FontSize="16" TextWrapping="Wrap"
-                   Text="{Binding CurrencyResult}"/>
+        <StackPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Margin="12">
+          <TextBlock FontSize="16" TextWrapping="Wrap" Text="{Binding CurrencyResult}"/>
+          <TextBlock FontSize="14" TextWrapping="Wrap" Foreground="Red"
+                     Text="{Binding CurrencyErrorMessage}"
+                     IsVisible="{Binding CurrencyErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+        </StackPanel>
       </Grid>
     </TabItem>
 
@@ -72,9 +78,12 @@
         <Button Grid.Row="2" Grid.Column="1" Margin="12" Padding="12,6" HorizontalAlignment="Left"
                 Command="{Binding GeneratePasswordCommand}">Generate Password</Button>
 
-        <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
-                   Margin="12" FontSize="16" TextWrapping="Wrap"
-                   Text="{Binding PasswordResult}"/>
+        <StackPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Margin="12">
+          <TextBlock FontSize="16" TextWrapping="Wrap" Text="{Binding PasswordResult}"/>
+          <TextBlock FontSize="14" TextWrapping="Wrap" Foreground="Red"
+                     Text="{Binding PasswordErrorMessage}"
+                     IsVisible="{Binding PasswordErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+        </StackPanel>
 
         <StackPanel Grid.Row="4" Grid.Column="1" Orientation="Horizontal" Margin="12" Spacing="12">
           <TextBlock VerticalAlignment="Center" Text="Random int: Min"/>
@@ -84,9 +93,12 @@
           <Button Padding="12,6" Command="{Binding GenerateRandomIntCommand}">Generate</Button>
         </StackPanel>
 
-        <TextBlock Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2"
-                   Margin="12" FontSize="16" TextWrapping="Wrap"
-                   Text="{Binding RandomResult}"/>
+        <StackPanel Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Margin="12">
+          <TextBlock FontSize="16" TextWrapping="Wrap" Text="{Binding RandomResult}"/>
+          <TextBlock FontSize="14" TextWrapping="Wrap" Foreground="Red"
+                     Text="{Binding RandomErrorMessage}"
+                     IsVisible="{Binding RandomErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+        </StackPanel>
       </Grid>
     </TabItem>
 
@@ -104,9 +116,12 @@
         <Button Grid.Row="2" Grid.Column="1" Margin="12" Padding="12,6" HorizontalAlignment="Left"
                 Command="{Binding CalculateBmiCommand}">Calculate BMI</Button>
 
-        <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
-                   Margin="12" FontSize="16" TextWrapping="Wrap"
-                   Text="{Binding BmiResult}"/>
+        <StackPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Margin="12">
+          <TextBlock FontSize="16" TextWrapping="Wrap" Text="{Binding BmiResult}"/>
+          <TextBlock FontSize="14" TextWrapping="Wrap" Foreground="Red"
+                     Text="{Binding BmiErrorMessage}"
+                     IsVisible="{Binding BmiErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+        </StackPanel>
       </Grid>
     </TabItem>
 
@@ -131,9 +146,12 @@
         <Button Grid.Row="2" Grid.Column="1" Margin="12" Padding="12,6" HorizontalAlignment="Left"
                 Command="{Binding ConvertDataSizeCommand}">Convert</Button>
 
-        <TextBlock Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2"
-                   Margin="12" FontSize="16" TextWrapping="Wrap"
-                   Text="{Binding DataResult}"/>
+        <StackPanel Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Margin="12">
+          <TextBlock FontSize="16" TextWrapping="Wrap" Text="{Binding DataResult}"/>
+          <TextBlock FontSize="14" TextWrapping="Wrap" Foreground="Red"
+                     Text="{Binding DataErrorMessage}"
+                     IsVisible="{Binding DataErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+        </StackPanel>
       </Grid>
     </TabItem>
   </TabControl>

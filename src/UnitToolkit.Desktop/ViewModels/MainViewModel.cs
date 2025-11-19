@@ -62,6 +62,9 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty]
     private string unitResult = string.Empty;
 
+    [ObservableProperty]
+    private string unitErrorMessage = string.Empty;
+
     // Currency Properties
     [ObservableProperty]
     private string currencyAmount = string.Empty;
@@ -71,6 +74,9 @@ public partial class MainViewModel : ObservableObject
 
     [ObservableProperty]
     private string currencyResult = string.Empty;
+
+    [ObservableProperty]
+    private string currencyErrorMessage = string.Empty;
 
     // Password Properties
     [ObservableProperty]
@@ -88,6 +94,9 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty]
     private string passwordResult = string.Empty;
 
+    [ObservableProperty]
+    private string passwordErrorMessage = string.Empty;
+
     // Random Integer Properties
     [ObservableProperty]
     private string randomMin = string.Empty;
@@ -98,6 +107,9 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty]
     private string randomResult = string.Empty;
 
+    [ObservableProperty]
+    private string randomErrorMessage = string.Empty;
+
     // BMI Properties
     [ObservableProperty]
     private string bmiHeight = string.Empty;
@@ -107,6 +119,9 @@ public partial class MainViewModel : ObservableObject
 
     [ObservableProperty]
     private string bmiResult = string.Empty;
+
+    [ObservableProperty]
+    private string bmiErrorMessage = string.Empty;
 
     // Data Size Properties
     [ObservableProperty]
@@ -123,6 +138,9 @@ public partial class MainViewModel : ObservableObject
 
     [ObservableProperty]
     private string dataResult = string.Empty;
+
+    [ObservableProperty]
+    private string dataErrorMessage = string.Empty;
 
     partial void OnSelectedConversionTypeChanged(string value)
     {
@@ -150,18 +168,29 @@ public partial class MainViewModel : ObservableObject
     private void ConvertUnits()
     {
         UnitResult = string.Empty;
+        UnitErrorMessage = string.Empty;
+
+        if (string.IsNullOrWhiteSpace(UnitValue))
+        {
+            UnitErrorMessage = "Please enter a value to convert.";
+            return;
+        }
+
+        if (!double.TryParse(UnitValue, NumberStyles.Float, CultureInfo.InvariantCulture, out var value))
+        {
+            UnitErrorMessage = "Value must be a valid number. Use dot (.) for decimals.";
+            return;
+        }
+
         try
         {
-            if (!double.TryParse(UnitValue, NumberStyles.Float, CultureInfo.InvariantCulture, out var value))
-                throw new FormatException("Value must be a number (use dot for decimals).");
-
             var type = SelectedConversionType.ToLowerInvariant();
             var result = _unitConverter.Convert(type, value, SelectedFromUnit, SelectedToUnit);
             UnitResult = $"Result: {result} {SelectedToUnit}";
         }
         catch (Exception ex)
         {
-            UnitResult = $"Error: {ex.Message}";
+            UnitErrorMessage = ex.Message;
         }
     }
 
@@ -169,19 +198,40 @@ public partial class MainViewModel : ObservableObject
     private void ConvertCurrency()
     {
         CurrencyResult = string.Empty;
+        CurrencyErrorMessage = string.Empty;
+
+        if (string.IsNullOrWhiteSpace(CurrencyAmount))
+        {
+            CurrencyErrorMessage = "Please enter an amount.";
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(CurrencyRate))
+        {
+            CurrencyErrorMessage = "Please enter an exchange rate.";
+            return;
+        }
+
+        if (!double.TryParse(CurrencyAmount, NumberStyles.Float, CultureInfo.InvariantCulture, out var amount))
+        {
+            CurrencyErrorMessage = "Amount must be a valid number.";
+            return;
+        }
+
+        if (!double.TryParse(CurrencyRate, NumberStyles.Float, CultureInfo.InvariantCulture, out var rate))
+        {
+            CurrencyErrorMessage = "Rate must be a valid number.";
+            return;
+        }
+
         try
         {
-            if (!double.TryParse(CurrencyAmount, NumberStyles.Float, CultureInfo.InvariantCulture, out var amount))
-                throw new FormatException("Amount must be a number.");
-            if (!double.TryParse(CurrencyRate, NumberStyles.Float, CultureInfo.InvariantCulture, out var rate))
-                throw new FormatException("Rate must be a number.");
-
             var result = _currencyCalculator.Convert(amount, rate);
             CurrencyResult = $"Converted: {result}";
         }
         catch (Exception ex)
         {
-            CurrencyResult = $"Error: {ex.Message}";
+            CurrencyErrorMessage = ex.Message;
         }
     }
 
@@ -189,17 +239,28 @@ public partial class MainViewModel : ObservableObject
     private void GeneratePassword()
     {
         PasswordResult = string.Empty;
+        PasswordErrorMessage = string.Empty;
+
+        if (string.IsNullOrWhiteSpace(PasswordLength))
+        {
+            PasswordErrorMessage = "Please enter a password length.";
+            return;
+        }
+
+        if (!int.TryParse(PasswordLength, out var length))
+        {
+            PasswordErrorMessage = "Length must be a valid integer.";
+            return;
+        }
+
         try
         {
-            if (!int.TryParse(PasswordLength, out var length))
-                throw new FormatException("Length must be an integer.");
-
             var password = _passwordGenerator.Generate(length, UseUppercase, UseDigits, UseSymbols);
             PasswordResult = $"Password: {password}";
         }
         catch (Exception ex)
         {
-            PasswordResult = $"Error: {ex.Message}";
+            PasswordErrorMessage = ex.Message;
         }
     }
 
@@ -207,19 +268,40 @@ public partial class MainViewModel : ObservableObject
     private void GenerateRandomInt()
     {
         RandomResult = string.Empty;
+        RandomErrorMessage = string.Empty;
+
+        if (string.IsNullOrWhiteSpace(RandomMin))
+        {
+            RandomErrorMessage = "Please enter a minimum value.";
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(RandomMax))
+        {
+            RandomErrorMessage = "Please enter a maximum value.";
+            return;
+        }
+
+        if (!int.TryParse(RandomMin, out var min))
+        {
+            RandomErrorMessage = "Minimum must be a valid integer.";
+            return;
+        }
+
+        if (!int.TryParse(RandomMax, out var max))
+        {
+            RandomErrorMessage = "Maximum must be a valid integer.";
+            return;
+        }
+
         try
         {
-            if (!int.TryParse(RandomMin, out var min))
-                throw new FormatException("Min must be an integer.");
-            if (!int.TryParse(RandomMax, out var max))
-                throw new FormatException("Max must be an integer.");
-
             var result = _passwordGenerator.RandomInt(min, max);
             RandomResult = $"Random int: {result}";
         }
         catch (Exception ex)
         {
-            RandomResult = $"Error: {ex.Message}";
+            RandomErrorMessage = ex.Message;
         }
     }
 
@@ -227,19 +309,40 @@ public partial class MainViewModel : ObservableObject
     private void CalculateBmi()
     {
         BmiResult = string.Empty;
+        BmiErrorMessage = string.Empty;
+
+        if (string.IsNullOrWhiteSpace(BmiHeight))
+        {
+            BmiErrorMessage = "Please enter your height.";
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(BmiWeight))
+        {
+            BmiErrorMessage = "Please enter your weight.";
+            return;
+        }
+
+        if (!double.TryParse(BmiHeight, NumberStyles.Float, CultureInfo.InvariantCulture, out var height))
+        {
+            BmiErrorMessage = "Height must be a valid number.";
+            return;
+        }
+
+        if (!double.TryParse(BmiWeight, NumberStyles.Float, CultureInfo.InvariantCulture, out var weight))
+        {
+            BmiErrorMessage = "Weight must be a valid number.";
+            return;
+        }
+
         try
         {
-            if (!double.TryParse(BmiHeight, NumberStyles.Float, CultureInfo.InvariantCulture, out var height))
-                throw new FormatException("Height must be a number.");
-            if (!double.TryParse(BmiWeight, NumberStyles.Float, CultureInfo.InvariantCulture, out var weight))
-                throw new FormatException("Weight must be a number.");
-
             var result = _bmiCalculator.Calculate(height, weight);
             BmiResult = $"BMI: {result.Value:F1} — {result.Category}\nAdvice: {result.Advice}";
         }
         catch (Exception ex)
         {
-            BmiResult = $"Error: {ex.Message}";
+            BmiErrorMessage = ex.Message;
         }
     }
 
@@ -247,17 +350,28 @@ public partial class MainViewModel : ObservableObject
     private void ConvertDataSize()
     {
         DataResult = string.Empty;
+        DataErrorMessage = string.Empty;
+
+        if (string.IsNullOrWhiteSpace(DataValue))
+        {
+            DataErrorMessage = "Please enter a value to convert.";
+            return;
+        }
+
+        if (!double.TryParse(DataValue, NumberStyles.Float, CultureInfo.InvariantCulture, out var value))
+        {
+            DataErrorMessage = "Value must be a valid number.";
+            return;
+        }
+
         try
         {
-            if (!double.TryParse(DataValue, NumberStyles.Float, CultureInfo.InvariantCulture, out var value))
-                throw new FormatException("Value must be a number.");
-
             var result = _dataSizeConverter.Convert(value, SelectedDataFromUnit, SelectedDataToUnit);
             DataResult = $"Result: {result} {SelectedDataToUnit}";
         }
         catch (Exception ex)
         {
-            DataResult = $"Error: {ex.Message}";
+            DataErrorMessage = ex.Message;
         }
     }
 }
