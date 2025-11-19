@@ -142,8 +142,8 @@ public partial class MainWindow : Window
             if (!double.TryParse(BmiWeightBox.Text, NumberStyles.Float, CultureInfo.InvariantCulture, out var weight))
                 throw new FormatException("Weight must be a number.");
 
-            var (bmi, cat, advice) = _bmi.Calculate(height, weight);
-            BmiResultText.Text = $"BMI: {bmi:F1} — {cat}\nAdvice: {advice}";
+            var result = _bmi.Calculate(height, weight);
+            BmiResultText.Text = $"BMI: {result.Value:F1} — {result.Category}\nAdvice: {result.Advice}";
         }
         catch (Exception ex)
         {
