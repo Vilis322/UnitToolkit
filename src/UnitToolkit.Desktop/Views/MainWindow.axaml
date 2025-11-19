@@ -165,6 +165,37 @@
         <!-- 1) Measurements Converter Panel -->
         <StackPanel IsVisible="{Binding IsMeasurementsView}">
         <Border Classes="section">
+          <StackPanel>
+            <!-- Help Button -->
+            <Button Command="{Binding ToggleMeasurementsHelpCommand}"
+                    HorizontalAlignment="Right"
+                    Margin="0,0,0,12">
+              Help
+            </Button>
+
+            <!-- Help Content -->
+            <Border IsVisible="{Binding IsMeasurementsHelpVisible}"
+                    Background="#E3F2FD"
+                    BorderBrush="#2196F3"
+                    BorderThickness="1"
+                    CornerRadius="4"
+                    Padding="16"
+                    Margin="0,0,0,16">
+              <StackPanel Spacing="8">
+                <TextBlock FontWeight="Bold" FontSize="16" Text="Measurements Converter"/>
+                <TextBlock FontWeight="SemiBold" Text="Features:"/>
+                <TextBlock Text="• Convert between Temperature units (Celsius, Fahrenheit, Kelvin)" TextWrapping="Wrap"/>
+                <TextBlock Text="• Convert between Length units (meters, centimeters, kilometers)" TextWrapping="Wrap"/>
+                <TextBlock Text="• Convert between Mass units (kilograms, grams, pounds)" TextWrapping="Wrap"/>
+                <TextBlock FontWeight="SemiBold" Text="Usage:" Margin="0,8,0,0"/>
+                <TextBlock Text="1. Select the conversion type (Temperature, Length, or Mass)" TextWrapping="Wrap"/>
+                <TextBlock Text="2. Enter the value you want to convert" TextWrapping="Wrap"/>
+                <TextBlock Text="3. Select the unit you're converting from and the unit you're converting to" TextWrapping="Wrap"/>
+                <TextBlock Text="4. Click Convert to see the result" TextWrapping="Wrap"/>
+                <TextBlock Text="Note: Use dot (.) for decimal values, not comma" TextWrapping="Wrap" FontStyle="Italic"/>
+              </StackPanel>
+            </Border>
+
           <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,*" ColumnDefinitions="Auto,*">
             <TextBlock Grid.Row="0" Grid.Column="0" Margin="8" VerticalAlignment="Center" Text="Type" FontWeight="SemiBold"/>
             <ComboBox Grid.Row="0" Grid.Column="1" Margin="8"
@@ -202,12 +233,44 @@
               </StackPanel>
             </Border>
           </Grid>
+          </StackPanel>
         </Border>
         </StackPanel>
 
         <!-- 2) Currency Panel -->
         <StackPanel IsVisible="{Binding IsCurrencyView}">
         <Border Classes="section">
+          <StackPanel>
+            <!-- Help Button -->
+            <Button Command="{Binding ToggleCurrencyHelpCommand}"
+                    HorizontalAlignment="Right"
+                    Margin="0,0,0,12">
+              Help
+            </Button>
+
+            <!-- Help Content -->
+            <Border IsVisible="{Binding IsCurrencyHelpVisible}"
+                    Background="#E3F2FD"
+                    BorderBrush="#2196F3"
+                    BorderThickness="1"
+                    CornerRadius="4"
+                    Padding="16"
+                    Margin="0,0,0,16">
+              <StackPanel Spacing="8">
+                <TextBlock FontWeight="Bold" FontSize="16" Text="Currency Converter"/>
+                <TextBlock FontWeight="SemiBold" Text="Features:"/>
+                <TextBlock Text="• Convert between multiple currencies using real-time exchange rates" TextWrapping="Wrap"/>
+                <TextBlock Text="• View common exchange rates table for quick reference" TextWrapping="Wrap"/>
+                <TextBlock Text="• Automatically fetches latest rates from Frankfurter API" TextWrapping="Wrap"/>
+                <TextBlock FontWeight="SemiBold" Text="Usage:" Margin="0,8,0,0"/>
+                <TextBlock Text="1. Enter the amount you want to convert" TextWrapping="Wrap"/>
+                <TextBlock Text="2. Select the currency you're converting from (e.g., USD)" TextWrapping="Wrap"/>
+                <TextBlock Text="3. Select the currency you're converting to (e.g., EUR)" TextWrapping="Wrap"/>
+                <TextBlock Text="4. Click Convert to fetch the latest exchange rate and calculate the result" TextWrapping="Wrap"/>
+                <TextBlock Text="Note: Requires internet connection to fetch exchange rates" TextWrapping="Wrap" FontStyle="Italic"/>
+              </StackPanel>
+            </Border>
+
           <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,*" ColumnDefinitions="Auto,*">
             <TextBlock Grid.Row="0" Grid.Column="0" Margin="8" VerticalAlignment="Center" Text="Amount" FontWeight="SemiBold"/>
             <TextBox Grid.Row="0" Grid.Column="1" Margin="8" Watermark="Enter amount"
@@ -266,11 +329,51 @@
               </DataGrid>
             </StackPanel>
           </Grid>
+          </StackPanel>
         </Border>
         </StackPanel>
 
         <!-- 3) Password / Random Panel -->
         <StackPanel IsVisible="{Binding IsPasswordView}">
+          <!-- Help Section -->
+          <Border Classes="section">
+            <StackPanel>
+              <!-- Help Button -->
+              <Button Command="{Binding TogglePasswordHelpCommand}"
+                      HorizontalAlignment="Right"
+                      Margin="0,0,0,12">
+                Help
+              </Button>
+
+              <!-- Help Content -->
+              <Border IsVisible="{Binding IsPasswordHelpVisible}"
+                      Background="#E3F2FD"
+                      BorderBrush="#2196F3"
+                      BorderThickness="1"
+                      CornerRadius="4"
+                      Padding="16"
+                      Margin="0,0,0,0">
+                <StackPanel Spacing="8">
+                  <TextBlock FontWeight="Bold" FontSize="16" Text="Password &amp; Random Generator"/>
+                  <TextBlock FontWeight="SemiBold" Text="Password Generator Features:"/>
+                  <TextBlock Text="• Generate secure random passwords with customizable options" TextWrapping="Wrap"/>
+                  <TextBlock Text="• Choose password length (4-256 characters)" TextWrapping="Wrap"/>
+                  <TextBlock Text="• Include uppercase letters, digits, and symbols" TextWrapping="Wrap"/>
+                  <TextBlock FontWeight="SemiBold" Text="Password Generator Usage:" Margin="0,8,0,0"/>
+                  <TextBlock Text="1. Enter desired password length (minimum 4, maximum 256)" TextWrapping="Wrap"/>
+                  <TextBlock Text="2. Check options for uppercase letters, digits, and symbols as needed" TextWrapping="Wrap"/>
+                  <TextBlock Text="3. Click Generate Password to create a random password" TextWrapping="Wrap"/>
+                  <TextBlock FontWeight="SemiBold" Text="Random Integer Features:" Margin="0,8,0,0"/>
+                  <TextBlock Text="• Generate random integers within a specified range" TextWrapping="Wrap"/>
+                  <TextBlock FontWeight="SemiBold" Text="Random Integer Usage:"/>
+                  <TextBlock Text="1. Enter minimum value" TextWrapping="Wrap"/>
+                  <TextBlock Text="2. Enter maximum value" TextWrapping="Wrap"/>
+                  <TextBlock Text="3. Click Generate to get a random integer in that range" TextWrapping="Wrap"/>
+                </StackPanel>
+              </Border>
+            </StackPanel>
+          </Border>
+
           <!-- Password Section -->
           <Border Classes="section">
             <Grid RowDefinitions="Auto,Auto,Auto,Auto" ColumnDefinitions="Auto,*">
@@ -341,6 +444,36 @@
         <!-- 4) BMI Panel -->
         <StackPanel IsVisible="{Binding IsBmiView}">
         <Border Classes="section">
+          <StackPanel>
+            <!-- Help Button -->
+            <Button Command="{Binding ToggleBmiHelpCommand}"
+                    HorizontalAlignment="Right"
+                    Margin="0,0,0,12">
+              Help
+            </Button>
+
+            <!-- Help Content -->
+            <Border IsVisible="{Binding IsBmiHelpVisible}"
+                    Background="#E3F2FD"
+                    BorderBrush="#2196F3"
+                    BorderThickness="1"
+                    CornerRadius="4"
+                    Padding="16"
+                    Margin="0,0,0,16">
+              <StackPanel Spacing="8">
+                <TextBlock FontWeight="Bold" FontSize="16" Text="BMI Calculator"/>
+                <TextBlock FontWeight="SemiBold" Text="Features:"/>
+                <TextBlock Text="• Calculate Body Mass Index based on height and weight" TextWrapping="Wrap"/>
+                <TextBlock Text="• Automatically categorizes BMI (Underweight, Normal, Overweight, Obese)" TextWrapping="Wrap"/>
+                <TextBlock Text="• Provides health advice based on BMI category" TextWrapping="Wrap"/>
+                <TextBlock FontWeight="SemiBold" Text="Usage:" Margin="0,8,0,0"/>
+                <TextBlock Text="1. Enter height in meters (e.g., 1.70) or centimeters (e.g., 170)" TextWrapping="Wrap"/>
+                <TextBlock Text="2. Enter weight in kilograms (e.g., 70)" TextWrapping="Wrap"/>
+                <TextBlock Text="3. Click Calculate BMI to see your BMI value, category, and health advice" TextWrapping="Wrap"/>
+                <TextBlock Text="Note: BMI categories - Underweight: &lt;18.5, Normal: 18.5-24.9, Overweight: 25-29.9, Obese: ≥30" TextWrapping="Wrap" FontStyle="Italic"/>
+              </StackPanel>
+            </Border>
+
           <Grid RowDefinitions="Auto,Auto,Auto,Auto" ColumnDefinitions="Auto,*">
             <TextBlock Grid.Row="0" Grid.Column="0" Margin="8" VerticalAlignment="Center" Text="Height (m or cm)" FontWeight="SemiBold"/>
             <TextBox Grid.Row="0" Grid.Column="1" Margin="8" Watermark="e.g., 1.70 or 170"
@@ -366,12 +499,44 @@
               </StackPanel>
             </Border>
           </Grid>
+          </StackPanel>
         </Border>
         </StackPanel>
 
         <!-- 5) Data Size Panel -->
         <StackPanel IsVisible="{Binding IsDataSizeView}">
         <Border Classes="section">
+          <StackPanel>
+            <!-- Help Button -->
+            <Button Command="{Binding ToggleDataSizeHelpCommand}"
+                    HorizontalAlignment="Right"
+                    Margin="0,0,0,12">
+              Help
+            </Button>
+
+            <!-- Help Content -->
+            <Border IsVisible="{Binding IsDataSizeHelpVisible}"
+                    Background="#E3F2FD"
+                    BorderBrush="#2196F3"
+                    BorderThickness="1"
+                    CornerRadius="4"
+                    Padding="16"
+                    Margin="0,0,0,16">
+              <StackPanel Spacing="8">
+                <TextBlock FontWeight="Bold" FontSize="16" Text="Data Size Converter"/>
+                <TextBlock FontWeight="SemiBold" Text="Features:"/>
+                <TextBlock Text="• Convert between data size units (bytes, KB, MB, GB, TB)" TextWrapping="Wrap"/>
+                <TextBlock Text="• Supports both decimal (KB, MB, GB, TB) and binary (KiB, MiB, GiB, TiB) units" TextWrapping="Wrap"/>
+                <TextBlock Text="• Accurate conversions using proper factors (1000 for decimal, 1024 for binary)" TextWrapping="Wrap"/>
+                <TextBlock FontWeight="SemiBold" Text="Usage:" Margin="0,8,0,0"/>
+                <TextBlock Text="1. Enter the data size value you want to convert" TextWrapping="Wrap"/>
+                <TextBlock Text="2. Select the unit you're converting from (e.g., MB)" TextWrapping="Wrap"/>
+                <TextBlock Text="3. Select the unit you're converting to (e.g., GB)" TextWrapping="Wrap"/>
+                <TextBlock Text="4. Click Convert to see the result" TextWrapping="Wrap"/>
+                <TextBlock Text="Note: Decimal units (KB, MB, GB) use base 1000, binary units (KiB, MiB, GiB) use base 1024" TextWrapping="Wrap" FontStyle="Italic"/>
+              </StackPanel>
+            </Border>
+
           <Grid RowDefinitions="Auto,Auto,Auto,Auto,*" ColumnDefinitions="Auto,*">
             <TextBlock Grid.Row="0" Grid.Column="0" Margin="8" VerticalAlignment="Center" Text="Value" FontWeight="SemiBold"/>
             <TextBox Grid.Row="0" Grid.Column="1" Margin="8" Watermark="e.g., 1536"
@@ -404,6 +569,7 @@
               </StackPanel>
             </Border>
           </Grid>
+          </StackPanel>
         </Border>
         </StackPanel>
 

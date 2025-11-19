@@ -60,6 +60,22 @@ public partial class MainViewModel : ObservableObject
     public bool IsBmiView => CurrentView == "Bmi";
     public bool IsDataSizeView => CurrentView == "DataSize";
 
+    // Help visibility properties
+    [ObservableProperty]
+    private bool isMeasurementsHelpVisible = false;
+
+    [ObservableProperty]
+    private bool isCurrencyHelpVisible = false;
+
+    [ObservableProperty]
+    private bool isPasswordHelpVisible = false;
+
+    [ObservableProperty]
+    private bool isBmiHelpVisible = false;
+
+    [ObservableProperty]
+    private bool isDataSizeHelpVisible = false;
+
     // Units Converter Properties
     [ObservableProperty]
     private List<string> conversionTypes = new();
@@ -506,5 +522,36 @@ public partial class MainViewModel : ObservableObject
     private void NavigateToMenu()
     {
         CurrentView = "Menu";
+    }
+
+    // Help Commands
+    [RelayCommand]
+    private void ToggleMeasurementsHelp()
+    {
+        IsMeasurementsHelpVisible = !IsMeasurementsHelpVisible;
+    }
+
+    [RelayCommand]
+    private void ToggleCurrencyHelp()
+    {
+        IsCurrencyHelpVisible = !IsCurrencyHelpVisible;
+    }
+
+    [RelayCommand]
+    private void TogglePasswordHelp()
+    {
+        IsPasswordHelpVisible = !IsPasswordHelpVisible;
+    }
+
+    [RelayCommand]
+    private void ToggleBmiHelp()
+    {
+        IsBmiHelpVisible = !IsBmiHelpVisible;
+    }
+
+    [RelayCommand]
+    private void ToggleDataSizeHelp()
+    {
+        IsDataSizeHelpVisible = !IsDataSizeHelpVisible;
     }
 }
