@@ -5,15 +5,39 @@
         x:DataType="vm:MainViewModel"
         Width="800" Height="600" Title="Unit Toolkit">
   <Window.Styles>
+    <!-- Button styles with proper hover states -->
+    <Style Selector="Button">
+      <Setter Property="Background" Value="#E0E0E0"/>
+      <Setter Property="Foreground" Value="Black"/>
+      <Setter Property="CornerRadius" Value="4"/>
+      <Setter Property="Padding" Value="12,6"/>
+      <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+    <Style Selector="Button:pointerover">
+      <Setter Property="Background" Value="#CCCCCC"/>
+      <Setter Property="Foreground" Value="Black"/>
+    </Style>
+    <Style Selector="Button:pressed">
+      <Setter Property="Background" Value="#B0B0B0"/>
+      <Setter Property="Foreground" Value="Black"/>
+    </Style>
+
     <Style Selector="Button.primary">
       <Setter Property="Background" Value="#5B8DBE"/>
       <Setter Property="Foreground" Value="White"/>
       <Setter Property="CornerRadius" Value="4"/>
       <Setter Property="Padding" Value="16,8"/>
+      <Setter Property="BorderThickness" Value="0"/>
     </Style>
     <Style Selector="Button.primary:pointerover">
       <Setter Property="Background" Value="#4A7CAD"/>
+      <Setter Property="Foreground" Value="White"/>
     </Style>
+    <Style Selector="Button.primary:pressed">
+      <Setter Property="Background" Value="#3A6C9D"/>
+      <Setter Property="Foreground" Value="White"/>
+    </Style>
+
     <Style Selector="Border.section">
       <Setter Property="BorderBrush" Value="#E0E0E0"/>
       <Setter Property="BorderThickness" Value="1"/>
@@ -22,19 +46,49 @@
       <Setter Property="Margin" Value="12"/>
       <Setter Property="Background" Value="#FAFAFA"/>
     </Style>
+
+    <!-- Text controls -->
     <Style Selector="TextBlock">
       <Setter Property="Foreground" Value="Black"/>
     </Style>
     <Style Selector="TextBox">
       <Setter Property="Foreground" Value="Black"/>
+      <Setter Property="Background" Value="White"/>
     </Style>
+
+    <!-- CheckBox with proper foreground -->
     <Style Selector="CheckBox">
       <Setter Property="Foreground" Value="Black"/>
     </Style>
+    <Style Selector="CheckBox:pointerover /template/ ContentPresenter">
+      <Setter Property="Foreground" Value="Black"/>
+    </Style>
+    <Style Selector="CheckBox:checked /template/ ContentPresenter">
+      <Setter Property="Foreground" Value="Black"/>
+    </Style>
+
+    <!-- ComboBox popup with light background -->
+    <Style Selector="ComboBox">
+      <Setter Property="Foreground" Value="Black"/>
+      <Setter Property="Background" Value="White"/>
+    </Style>
+    <Style Selector="ComboBox /template/ Border#PART_PopupBorder">
+      <Setter Property="Background" Value="White"/>
+    </Style>
+    <Style Selector="ComboBoxItem">
+      <Setter Property="Background" Value="White"/>
+      <Setter Property="Foreground" Value="Black"/>
+    </Style>
+    <Style Selector="ComboBoxItem:pointerover /template/ ContentPresenter">
+      <Setter Property="Background" Value="#E3F2FD"/>
+    </Style>
+    <Style Selector="ComboBoxItem:selected /template/ ContentPresenter">
+      <Setter Property="Background" Value="#BBDEFB"/>
+    </Style>
   </Window.Styles>
   <TabControl Margin="8">
-    <!-- 1) Units -->
-    <TabItem Header="Units">
+    <!-- 1) Measurements Converter -->
+    <TabItem Header="Measurements">
       <ScrollViewer>
         <Border Classes="section">
           <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,*" ColumnDefinitions="Auto,*">
