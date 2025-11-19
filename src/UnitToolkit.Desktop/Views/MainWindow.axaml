@@ -22,6 +22,15 @@
       <Setter Property="Margin" Value="12"/>
       <Setter Property="Background" Value="#FAFAFA"/>
     </Style>
+    <Style Selector="TextBlock">
+      <Setter Property="Foreground" Value="Black"/>
+    </Style>
+    <Style Selector="TextBox">
+      <Setter Property="Foreground" Value="Black"/>
+    </Style>
+    <Style Selector="CheckBox">
+      <Setter Property="Foreground" Value="Black"/>
+    </Style>
   </Window.Styles>
   <TabControl Margin="8">
     <!-- 1) Units -->
