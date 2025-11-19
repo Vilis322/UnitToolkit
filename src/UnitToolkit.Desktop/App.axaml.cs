@@ -3,6 +3,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Microsoft.Extensions.DependencyInjection;
 using UnitToolkit.Core.Services;
+using UnitToolkit.Desktop.ViewModels;
 using UnitToolkit.Desktop.Views;
 
 namespace UnitToolkit.Desktop;
@@ -27,13 +28,17 @@ public partial class App : Application
         services.AddSingleton<BmiCalculator>();
         services.AddSingleton<DataSizeConverter>();
 
+        // Register ViewModels
+        services.AddTransient<MainViewModel>();
+
         ServiceProvider = services.BuildServiceProvider();
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            // For now, MainWindow still creates services directly
-            // This will be replaced with ViewModel injection in the MVVM refactoring
-            desktop.MainWindow = new MainWindow();
+            desktop.MainWindow = new MainWindow
+            {
+                DataContext = ServiceProvider.GetRequiredService<MainViewModel>()
+            };
         }
 
         base.OnFrameworkInitializationCompleted();

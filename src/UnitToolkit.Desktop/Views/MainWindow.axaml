@@ -1,32 +1,38 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:UnitToolkit.Desktop.ViewModels"
         x:Class="UnitToolkit.Desktop.Views.MainWindow"
+        x:DataType="vm:MainViewModel"
         Width="760" Height="560" Title="Unit Toolkit">
   <TabControl>
     <!-- 1) Units -->
     <TabItem Header="Units">
       <Grid RowDefinitions="Auto,Auto,Auto,Auto,*" ColumnDefinitions="Auto,*">
         <TextBlock Grid.Row="0" Grid.Column="0" Margin="12" VerticalAlignment="Center" Text="Type"/>
-        <ComboBox x:Name="UnitTypeBox" Grid.Row="0" Grid.Column="1" Margin="12" SelectedIndex="0">
-          <ComboBoxItem Content="Temperature"/>
-          <ComboBoxItem Content="Length"/>
-          <ComboBoxItem Content="Mass"/>
-        </ComboBox>
+        <ComboBox Grid.Row="0" Grid.Column="1" Margin="12"
+                  ItemsSource="{Binding ConversionTypes}"
+                  SelectedItem="{Binding SelectedConversionType}"/>
 
         <TextBlock Grid.Row="1" Grid.Column="0" Margin="12" VerticalAlignment="Center" Text="Value"/>
-        <TextBox x:Name="UnitValueBox" Grid.Row="1" Grid.Column="1" Margin="12" Watermark="Use dot for decimals"/>
+        <TextBox Grid.Row="1" Grid.Column="1" Margin="12" Watermark="Use dot for decimals"
+                 Text="{Binding UnitValue}"/>
 
         <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" Margin="12" Spacing="8">
-          <ComboBox x:Name="FromUnitBox" Width="120"/>
+          <ComboBox Width="120"
+                    ItemsSource="{Binding AvailableUnits}"
+                    SelectedItem="{Binding SelectedFromUnit}"/>
           <TextBlock VerticalAlignment="Center" Text="→"/>
-          <ComboBox x:Name="ToUnitBox" Width="120"/>
+          <ComboBox Width="120"
+                    ItemsSource="{Binding AvailableUnits}"
+                    SelectedItem="{Binding SelectedToUnit}"/>
         </StackPanel>
 
         <Button Grid.Row="3" Grid.Column="1" Margin="12" Padding="12,6"
-                HorizontalAlignment="Left" Click="OnUnitsConvertClick">Convert</Button>
+                HorizontalAlignment="Left" Command="{Binding ConvertUnitsCommand}">Convert</Button>
 
-        <TextBlock x:Name="UnitResultText" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2"
-                   Margin="12" FontSize="16" TextWrapping="Wrap"/>
+        <TextBlock Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2"
+                   Margin="12" FontSize="16" TextWrapping="Wrap"
+                   Text="{Binding UnitResult}"/>
       </Grid>
     </TabItem>
 
@@ -34,16 +40,19 @@
     <TabItem Header="Currency">
       <Grid RowDefinitions="Auto,Auto,Auto,*" ColumnDefinitions="Auto,*">
         <TextBlock Grid.Row="0" Grid.Column="0" Margin="12" VerticalAlignment="Center" Text="Amount"/>
-        <TextBox x:Name="CurAmountBox" Grid.Row="0" Grid.Column="1" Margin="12"/>
+        <TextBox Grid.Row="0" Grid.Column="1" Margin="12"
+                 Text="{Binding CurrencyAmount}"/>
 
         <TextBlock Grid.Row="1" Grid.Column="0" Margin="12" VerticalAlignment="Center" Text="Rate (FROM→TO)"/>
-        <TextBox x:Name="CurRateBox" Grid.Row="1" Grid.Column="1" Margin="12" Watermark="e.g., 1.1"/>
+        <TextBox Grid.Row="1" Grid.Column="1" Margin="12" Watermark="e.g., 1.1"
+                 Text="{Binding CurrencyRate}"/>
 
         <Button Grid.Row="2" Grid.Column="1" Margin="12" Padding="12,6"
-                HorizontalAlignment="Left" Click="OnCurrencyConvertClick">Convert</Button>
+                HorizontalAlignment="Left" Command="{Binding ConvertCurrencyCommand}">Convert</Button>
 
-        <TextBlock x:Name="CurResultText" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
-                   Margin="12" FontSize="16" TextWrapping="Wrap"/>
+        <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
+                   Margin="12" FontSize="16" TextWrapping="Wrap"
+                   Text="{Binding CurrencyResult}"/>
       </Grid>
     </TabItem>
 
@@ -51,30 +60,33 @@
     <TabItem Header="Password / Random">
       <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,*" ColumnDefinitions="Auto,*">
         <TextBlock Grid.Row="0" Grid.Column="0" Margin="12" VerticalAlignment="Center" Text="Length"/>
-        <TextBox x:Name="PwdLengthBox" Grid.Row="0" Grid.Column="1" Margin="12" Text="12"/>
+        <TextBox Grid.Row="0" Grid.Column="1" Margin="12"
+                 Text="{Binding PasswordLength}"/>
 
         <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Margin="12" Spacing="16">
-          <CheckBox x:Name="PwdUpperBox"   Content="Uppercase (A–Z)" IsChecked="True"/>
-          <CheckBox x:Name="PwdDigitsBox"  Content="Digits (0–9)"    IsChecked="True"/>
-          <CheckBox x:Name="PwdSymbolsBox" Content="Symbols (!@#…)"  IsChecked="False"/>
+          <CheckBox Content="Uppercase (A–Z)" IsChecked="{Binding UseUppercase}"/>
+          <CheckBox Content="Digits (0–9)" IsChecked="{Binding UseDigits}"/>
+          <CheckBox Content="Symbols (!@#…)" IsChecked="{Binding UseSymbols}"/>
         </StackPanel>
 
         <Button Grid.Row="2" Grid.Column="1" Margin="12" Padding="12,6" HorizontalAlignment="Left"
-                Click="OnGeneratePasswordClick">Generate Password</Button>
+                Command="{Binding GeneratePasswordCommand}">Generate Password</Button>
 
-        <TextBlock x:Name="PwdResultText" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
-                   Margin="12" FontSize="16" TextWrapping="Wrap"/>
+        <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
+                   Margin="12" FontSize="16" TextWrapping="Wrap"
+                   Text="{Binding PasswordResult}"/>
 
         <StackPanel Grid.Row="4" Grid.Column="1" Orientation="Horizontal" Margin="12" Spacing="12">
           <TextBlock VerticalAlignment="Center" Text="Random int: Min"/>
-          <TextBox x:Name="RandMinBox" Width="80"/>
+          <TextBox Width="80" Text="{Binding RandomMin}"/>
           <TextBlock VerticalAlignment="Center" Text="Max"/>
-          <TextBox x:Name="RandMaxBox" Width="80"/>
-          <Button Padding="12,6" Click="OnRandomIntClick">Generate</Button>
+          <TextBox Width="80" Text="{Binding RandomMax}"/>
+          <Button Padding="12,6" Command="{Binding GenerateRandomIntCommand}">Generate</Button>
         </StackPanel>
 
-        <TextBlock x:Name="RandResultText" Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2"
-                   Margin="12" FontSize="16" TextWrapping="Wrap"/>
+        <TextBlock Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2"
+                   Margin="12" FontSize="16" TextWrapping="Wrap"
+                   Text="{Binding RandomResult}"/>
       </Grid>
     </TabItem>
 
@@ -82,16 +94,19 @@
     <TabItem Header="BMI">
       <Grid RowDefinitions="Auto,Auto,Auto,*" ColumnDefinitions="Auto,*">
         <TextBlock Grid.Row="0" Grid.Column="0" Margin="12" VerticalAlignment="Center" Text="Height (m or cm)"/>
-        <TextBox x:Name="BmiHeightBox" Grid.Row="0" Grid.Column="1" Margin="12" Watermark="e.g., 1.70 or 170"/>
+        <TextBox Grid.Row="0" Grid.Column="1" Margin="12" Watermark="e.g., 1.70 or 170"
+                 Text="{Binding BmiHeight}"/>
 
         <TextBlock Grid.Row="1" Grid.Column="0" Margin="12" VerticalAlignment="Center" Text="Weight (kg)"/>
-        <TextBox x:Name="BmiWeightBox" Grid.Row="1" Grid.Column="1" Margin="12"/>
+        <TextBox Grid.Row="1" Grid.Column="1" Margin="12"
+                 Text="{Binding BmiWeight}"/>
 
         <Button Grid.Row="2" Grid.Column="1" Margin="12" Padding="12,6" HorizontalAlignment="Left"
-                Click="OnBmiCalculateClick">Calculate BMI</Button>
+                Command="{Binding CalculateBmiCommand}">Calculate BMI</Button>
 
-        <TextBlock x:Name="BmiResultText" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
-                   Margin="12" FontSize="16" TextWrapping="Wrap"/>
+        <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
+                   Margin="12" FontSize="16" TextWrapping="Wrap"
+                   Text="{Binding BmiResult}"/>
       </Grid>
     </TabItem>
 
@@ -99,20 +114,26 @@
     <TabItem Header="Data Size">
       <Grid RowDefinitions="Auto,Auto,Auto,Auto,*" ColumnDefinitions="Auto,*">
         <TextBlock Grid.Row="0" Grid.Column="0" Margin="12" VerticalAlignment="Center" Text="Value"/>
-        <TextBox x:Name="DataValueBox" Grid.Row="0" Grid.Column="1" Margin="12" Watermark="e.g., 1536"/>
+        <TextBox Grid.Row="0" Grid.Column="1" Margin="12" Watermark="e.g., 1536"
+                 Text="{Binding DataValue}"/>
 
         <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Margin="12" Spacing="12">
           <TextBlock VerticalAlignment="Center" Text="From"/>
-          <ComboBox x:Name="DataFromBox" Width="120"/>
+          <ComboBox Width="120"
+                    ItemsSource="{Binding DataSizeUnits}"
+                    SelectedItem="{Binding SelectedDataFromUnit}"/>
           <TextBlock VerticalAlignment="Center" Text="To"/>
-          <ComboBox x:Name="DataToBox" Width="120"/>
+          <ComboBox Width="120"
+                    ItemsSource="{Binding DataSizeUnits}"
+                    SelectedItem="{Binding SelectedDataToUnit}"/>
         </StackPanel>
 
         <Button Grid.Row="2" Grid.Column="1" Margin="12" Padding="12,6" HorizontalAlignment="Left"
-                Click="OnDataSizeConvertClick">Convert</Button>
+                Command="{Binding ConvertDataSizeCommand}">Convert</Button>
 
-        <TextBlock x:Name="DataResultText" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2"
-                   Margin="12" FontSize="16" TextWrapping="Wrap"/>
+        <TextBlock Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2"
+                   Margin="12" FontSize="16" TextWrapping="Wrap"
+                   Text="{Binding DataResult}"/>
       </Grid>
     </TabItem>
   </TabControl>
