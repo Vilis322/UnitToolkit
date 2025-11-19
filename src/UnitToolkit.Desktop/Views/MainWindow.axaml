@@ -3,156 +3,249 @@
         xmlns:vm="using:UnitToolkit.Desktop.ViewModels"
         x:Class="UnitToolkit.Desktop.Views.MainWindow"
         x:DataType="vm:MainViewModel"
-        Width="760" Height="560" Title="Unit Toolkit">
-  <TabControl>
+        Width="800" Height="600" Title="Unit Toolkit">
+  <Window.Styles>
+    <Style Selector="Button.primary">
+      <Setter Property="Background" Value="#5B8DBE"/>
+      <Setter Property="Foreground" Value="White"/>
+      <Setter Property="CornerRadius" Value="4"/>
+      <Setter Property="Padding" Value="16,8"/>
+    </Style>
+    <Style Selector="Button.primary:pointerover">
+      <Setter Property="Background" Value="#4A7CAD"/>
+    </Style>
+    <Style Selector="Border.section">
+      <Setter Property="BorderBrush" Value="#E0E0E0"/>
+      <Setter Property="BorderThickness" Value="1"/>
+      <Setter Property="CornerRadius" Value="6"/>
+      <Setter Property="Padding" Value="16"/>
+      <Setter Property="Margin" Value="12"/>
+      <Setter Property="Background" Value="#FAFAFA"/>
+    </Style>
+  </Window.Styles>
+  <TabControl Margin="8">
     <!-- 1) Units -->
     <TabItem Header="Units">
-      <Grid RowDefinitions="Auto,Auto,Auto,Auto,*" ColumnDefinitions="Auto,*">
-        <TextBlock Grid.Row="0" Grid.Column="0" Margin="12" VerticalAlignment="Center" Text="Type"/>
-        <ComboBox Grid.Row="0" Grid.Column="1" Margin="12"
-                  ItemsSource="{Binding ConversionTypes}"
-                  SelectedItem="{Binding SelectedConversionType}"/>
+      <ScrollViewer>
+        <Border Classes="section">
+          <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,*" ColumnDefinitions="Auto,*">
+            <TextBlock Grid.Row="0" Grid.Column="0" Margin="8" VerticalAlignment="Center" Text="Type" FontWeight="SemiBold"/>
+            <ComboBox Grid.Row="0" Grid.Column="1" Margin="8"
+                      ItemsSource="{Binding ConversionTypes}"
+                      SelectedItem="{Binding SelectedConversionType}"/>
 
-        <TextBlock Grid.Row="1" Grid.Column="0" Margin="12" VerticalAlignment="Center" Text="Value"/>
-        <TextBox Grid.Row="1" Grid.Column="1" Margin="12" Watermark="Use dot for decimals"
-                 Text="{Binding UnitValue}"/>
+            <TextBlock Grid.Row="1" Grid.Column="0" Margin="8" VerticalAlignment="Center" Text="Value" FontWeight="SemiBold"/>
+            <TextBox Grid.Row="1" Grid.Column="1" Margin="8" Watermark="Use dot for decimals"
+                     Text="{Binding UnitValue}"/>
 
-        <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" Margin="12" Spacing="8">
-          <ComboBox Width="120"
-                    ItemsSource="{Binding AvailableUnits}"
-                    SelectedItem="{Binding SelectedFromUnit}"/>
-          <TextBlock VerticalAlignment="Center" Text="→"/>
-          <ComboBox Width="120"
-                    ItemsSource="{Binding AvailableUnits}"
-                    SelectedItem="{Binding SelectedToUnit}"/>
-        </StackPanel>
+            <TextBlock Grid.Row="2" Grid.Column="0" Margin="8" VerticalAlignment="Center" Text="Convert" FontWeight="SemiBold"/>
+            <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" Margin="8" Spacing="8">
+              <ComboBox Width="140"
+                        ItemsSource="{Binding AvailableUnits}"
+                        SelectedItem="{Binding SelectedFromUnit}"/>
+              <TextBlock VerticalAlignment="Center" Text="→" FontSize="16"/>
+              <ComboBox Width="140"
+                        ItemsSource="{Binding AvailableUnits}"
+                        SelectedItem="{Binding SelectedToUnit}"/>
+            </StackPanel>
 
-        <Button Grid.Row="3" Grid.Column="1" Margin="12" Padding="12,6"
-                HorizontalAlignment="Left" Command="{Binding ConvertUnitsCommand}">Convert</Button>
+            <Button Grid.Row="3" Grid.Column="1" Margin="8"
+                    Classes="primary"
+                    HorizontalAlignment="Left" Command="{Binding ConvertUnitsCommand}">Convert</Button>
 
-        <StackPanel Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Margin="12">
-          <TextBlock FontSize="16" TextWrapping="Wrap" Text="{Binding UnitResult}"/>
-          <TextBlock FontSize="14" TextWrapping="Wrap" Foreground="Red"
-                     Text="{Binding UnitErrorMessage}"
-                     IsVisible="{Binding UnitErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
-        </StackPanel>
-      </Grid>
+            <Border Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2"
+                    Margin="8,16,8,8" Padding="12"
+                    Background="#F5F5F5" CornerRadius="4"
+                    BorderBrush="#DDDDDD" BorderThickness="1">
+              <StackPanel>
+                <TextBlock FontSize="16" TextWrapping="Wrap" Text="{Binding UnitResult}" FontWeight="Medium"/>
+                <TextBlock FontSize="14" TextWrapping="Wrap" Foreground="#D32F2F"
+                           Text="{Binding UnitErrorMessage}"
+                           IsVisible="{Binding UnitErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+              </StackPanel>
+            </Border>
+          </Grid>
+        </Border>
+      </ScrollViewer>
     </TabItem>
 
     <!-- 2) Currency -->
     <TabItem Header="Currency">
-      <Grid RowDefinitions="Auto,Auto,Auto,*" ColumnDefinitions="Auto,*">
-        <TextBlock Grid.Row="0" Grid.Column="0" Margin="12" VerticalAlignment="Center" Text="Amount"/>
-        <TextBox Grid.Row="0" Grid.Column="1" Margin="12"
-                 Text="{Binding CurrencyAmount}"/>
+      <ScrollViewer>
+        <Border Classes="section">
+          <Grid RowDefinitions="Auto,Auto,Auto,Auto,*" ColumnDefinitions="Auto,*">
+            <TextBlock Grid.Row="0" Grid.Column="0" Margin="8" VerticalAlignment="Center" Text="Amount" FontWeight="SemiBold"/>
+            <TextBox Grid.Row="0" Grid.Column="1" Margin="8"
+                     Text="{Binding CurrencyAmount}"/>
 
-        <TextBlock Grid.Row="1" Grid.Column="0" Margin="12" VerticalAlignment="Center" Text="Rate (FROM→TO)"/>
-        <TextBox Grid.Row="1" Grid.Column="1" Margin="12" Watermark="e.g., 1.1"
-                 Text="{Binding CurrencyRate}"/>
+            <TextBlock Grid.Row="1" Grid.Column="0" Margin="8" VerticalAlignment="Center" Text="Rate (FROM→TO)" FontWeight="SemiBold"/>
+            <TextBox Grid.Row="1" Grid.Column="1" Margin="8" Watermark="e.g., 1.1"
+                     Text="{Binding CurrencyRate}"/>
 
-        <Button Grid.Row="2" Grid.Column="1" Margin="12" Padding="12,6"
-                HorizontalAlignment="Left" Command="{Binding ConvertCurrencyCommand}">Convert</Button>
+            <Button Grid.Row="2" Grid.Column="1" Margin="8"
+                    Classes="primary"
+                    HorizontalAlignment="Left" Command="{Binding ConvertCurrencyCommand}">Convert</Button>
 
-        <StackPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Margin="12">
-          <TextBlock FontSize="16" TextWrapping="Wrap" Text="{Binding CurrencyResult}"/>
-          <TextBlock FontSize="14" TextWrapping="Wrap" Foreground="Red"
-                     Text="{Binding CurrencyErrorMessage}"
-                     IsVisible="{Binding CurrencyErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
-        </StackPanel>
-      </Grid>
+            <Border Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
+                    Margin="8,16,8,8" Padding="12"
+                    Background="#F5F5F5" CornerRadius="4"
+                    BorderBrush="#DDDDDD" BorderThickness="1">
+              <StackPanel>
+                <TextBlock FontSize="16" TextWrapping="Wrap" Text="{Binding CurrencyResult}" FontWeight="Medium"/>
+                <TextBlock FontSize="14" TextWrapping="Wrap" Foreground="#D32F2F"
+                           Text="{Binding CurrencyErrorMessage}"
+                           IsVisible="{Binding CurrencyErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+              </StackPanel>
+            </Border>
+          </Grid>
+        </Border>
+      </ScrollViewer>
     </TabItem>
 
     <!-- 3) Password / Random -->
     <TabItem Header="Password / Random">
-      <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,*" ColumnDefinitions="Auto,*">
-        <TextBlock Grid.Row="0" Grid.Column="0" Margin="12" VerticalAlignment="Center" Text="Length"/>
-        <TextBox Grid.Row="0" Grid.Column="1" Margin="12"
-                 Text="{Binding PasswordLength}"/>
+      <ScrollViewer>
+        <StackPanel>
+          <!-- Password Section -->
+          <Border Classes="section">
+            <Grid RowDefinitions="Auto,Auto,Auto,Auto" ColumnDefinitions="Auto,*">
+              <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
+                         Margin="0,0,0,12" FontSize="16" FontWeight="Bold" Text="Password Generator"/>
 
-        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Margin="12" Spacing="16">
-          <CheckBox Content="Uppercase (A–Z)" IsChecked="{Binding UseUppercase}"/>
-          <CheckBox Content="Digits (0–9)" IsChecked="{Binding UseDigits}"/>
-          <CheckBox Content="Symbols (!@#…)" IsChecked="{Binding UseSymbols}"/>
+              <TextBlock Grid.Row="1" Grid.Column="0" Margin="8" VerticalAlignment="Center" Text="Length" FontWeight="SemiBold"/>
+              <TextBox Grid.Row="1" Grid.Column="1" Margin="8" Width="200" HorizontalAlignment="Left"
+                       Text="{Binding PasswordLength}"/>
+
+              <TextBlock Grid.Row="2" Grid.Column="0" Margin="8" VerticalAlignment="Top" Text="Options" FontWeight="SemiBold"/>
+              <StackPanel Grid.Row="2" Grid.Column="1" Margin="8" Spacing="8">
+                <CheckBox Content="Uppercase (A–Z)" IsChecked="{Binding UseUppercase}"/>
+                <CheckBox Content="Digits (0–9)" IsChecked="{Binding UseDigits}"/>
+                <CheckBox Content="Symbols (!@#…)" IsChecked="{Binding UseSymbols}"/>
+              </StackPanel>
+
+              <StackPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Margin="8">
+                <Button Classes="primary" HorizontalAlignment="Left"
+                        Command="{Binding GeneratePasswordCommand}">Generate Password</Button>
+
+                <Border Margin="0,12,0,0" Padding="12"
+                        Background="#F5F5F5" CornerRadius="4"
+                        BorderBrush="#DDDDDD" BorderThickness="1">
+                  <StackPanel>
+                    <TextBlock FontSize="16" TextWrapping="Wrap" Text="{Binding PasswordResult}" FontWeight="Medium"/>
+                    <TextBlock FontSize="14" TextWrapping="Wrap" Foreground="#D32F2F"
+                               Text="{Binding PasswordErrorMessage}"
+                               IsVisible="{Binding PasswordErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+                  </StackPanel>
+                </Border>
+              </StackPanel>
+            </Grid>
+          </Border>
+
+          <!-- Random Integer Section -->
+          <Border Classes="section">
+            <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="Auto,*">
+              <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
+                         Margin="0,0,0,12" FontSize="16" FontWeight="Bold" Text="Random Integer"/>
+
+              <TextBlock Grid.Row="1" Grid.Column="0" Margin="8" VerticalAlignment="Center" Text="Range" FontWeight="SemiBold"/>
+              <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Margin="8" Spacing="8">
+                <TextBox Width="100" Watermark="Min" Text="{Binding RandomMin}"/>
+                <TextBlock VerticalAlignment="Center" Text="to" FontWeight="SemiBold"/>
+                <TextBox Width="100" Watermark="Max" Text="{Binding RandomMax}"/>
+              </StackPanel>
+
+              <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Margin="8">
+                <Button Classes="primary" HorizontalAlignment="Left"
+                        Command="{Binding GenerateRandomIntCommand}">Generate</Button>
+
+                <Border Margin="0,12,0,0" Padding="12"
+                        Background="#F5F5F5" CornerRadius="4"
+                        BorderBrush="#DDDDDD" BorderThickness="1">
+                  <StackPanel>
+                    <TextBlock FontSize="16" TextWrapping="Wrap" Text="{Binding RandomResult}" FontWeight="Medium"/>
+                    <TextBlock FontSize="14" TextWrapping="Wrap" Foreground="#D32F2F"
+                               Text="{Binding RandomErrorMessage}"
+                               IsVisible="{Binding RandomErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+                  </StackPanel>
+                </Border>
+              </StackPanel>
+            </Grid>
+          </Border>
         </StackPanel>
-
-        <Button Grid.Row="2" Grid.Column="1" Margin="12" Padding="12,6" HorizontalAlignment="Left"
-                Command="{Binding GeneratePasswordCommand}">Generate Password</Button>
-
-        <StackPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Margin="12">
-          <TextBlock FontSize="16" TextWrapping="Wrap" Text="{Binding PasswordResult}"/>
-          <TextBlock FontSize="14" TextWrapping="Wrap" Foreground="Red"
-                     Text="{Binding PasswordErrorMessage}"
-                     IsVisible="{Binding PasswordErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
-        </StackPanel>
-
-        <StackPanel Grid.Row="4" Grid.Column="1" Orientation="Horizontal" Margin="12" Spacing="12">
-          <TextBlock VerticalAlignment="Center" Text="Random int: Min"/>
-          <TextBox Width="80" Text="{Binding RandomMin}"/>
-          <TextBlock VerticalAlignment="Center" Text="Max"/>
-          <TextBox Width="80" Text="{Binding RandomMax}"/>
-          <Button Padding="12,6" Command="{Binding GenerateRandomIntCommand}">Generate</Button>
-        </StackPanel>
-
-        <StackPanel Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Margin="12">
-          <TextBlock FontSize="16" TextWrapping="Wrap" Text="{Binding RandomResult}"/>
-          <TextBlock FontSize="14" TextWrapping="Wrap" Foreground="Red"
-                     Text="{Binding RandomErrorMessage}"
-                     IsVisible="{Binding RandomErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
-        </StackPanel>
-      </Grid>
+      </ScrollViewer>
     </TabItem>
 
     <!-- 4) BMI -->
     <TabItem Header="BMI">
-      <Grid RowDefinitions="Auto,Auto,Auto,*" ColumnDefinitions="Auto,*">
-        <TextBlock Grid.Row="0" Grid.Column="0" Margin="12" VerticalAlignment="Center" Text="Height (m or cm)"/>
-        <TextBox Grid.Row="0" Grid.Column="1" Margin="12" Watermark="e.g., 1.70 or 170"
-                 Text="{Binding BmiHeight}"/>
+      <ScrollViewer>
+        <Border Classes="section">
+          <Grid RowDefinitions="Auto,Auto,Auto,Auto" ColumnDefinitions="Auto,*">
+            <TextBlock Grid.Row="0" Grid.Column="0" Margin="8" VerticalAlignment="Center" Text="Height (m or cm)" FontWeight="SemiBold"/>
+            <TextBox Grid.Row="0" Grid.Column="1" Margin="8" Watermark="e.g., 1.70 or 170"
+                     Text="{Binding BmiHeight}"/>
 
-        <TextBlock Grid.Row="1" Grid.Column="0" Margin="12" VerticalAlignment="Center" Text="Weight (kg)"/>
-        <TextBox Grid.Row="1" Grid.Column="1" Margin="12"
-                 Text="{Binding BmiWeight}"/>
+            <TextBlock Grid.Row="1" Grid.Column="0" Margin="8" VerticalAlignment="Center" Text="Weight (kg)" FontWeight="SemiBold"/>
+            <TextBox Grid.Row="1" Grid.Column="1" Margin="8"
+                     Text="{Binding BmiWeight}"/>
 
-        <Button Grid.Row="2" Grid.Column="1" Margin="12" Padding="12,6" HorizontalAlignment="Left"
-                Command="{Binding CalculateBmiCommand}">Calculate BMI</Button>
+            <Button Grid.Row="2" Grid.Column="1" Margin="8"
+                    Classes="primary"
+                    HorizontalAlignment="Left" Command="{Binding CalculateBmiCommand}">Calculate BMI</Button>
 
-        <StackPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Margin="12">
-          <TextBlock FontSize="16" TextWrapping="Wrap" Text="{Binding BmiResult}"/>
-          <TextBlock FontSize="14" TextWrapping="Wrap" Foreground="Red"
-                     Text="{Binding BmiErrorMessage}"
-                     IsVisible="{Binding BmiErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
-        </StackPanel>
-      </Grid>
+            <Border Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
+                    Margin="8,16,8,8" Padding="12"
+                    Background="#F5F5F5" CornerRadius="4"
+                    BorderBrush="#DDDDDD" BorderThickness="1">
+              <StackPanel>
+                <TextBlock FontSize="16" TextWrapping="Wrap" Text="{Binding BmiResult}" FontWeight="Medium"/>
+                <TextBlock FontSize="14" TextWrapping="Wrap" Foreground="#D32F2F"
+                           Text="{Binding BmiErrorMessage}"
+                           IsVisible="{Binding BmiErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+              </StackPanel>
+            </Border>
+          </Grid>
+        </Border>
+      </ScrollViewer>
     </TabItem>
 
     <!-- 5) Data Size -->
     <TabItem Header="Data Size">
-      <Grid RowDefinitions="Auto,Auto,Auto,Auto,*" ColumnDefinitions="Auto,*">
-        <TextBlock Grid.Row="0" Grid.Column="0" Margin="12" VerticalAlignment="Center" Text="Value"/>
-        <TextBox Grid.Row="0" Grid.Column="1" Margin="12" Watermark="e.g., 1536"
-                 Text="{Binding DataValue}"/>
+      <ScrollViewer>
+        <Border Classes="section">
+          <Grid RowDefinitions="Auto,Auto,Auto,Auto,*" ColumnDefinitions="Auto,*">
+            <TextBlock Grid.Row="0" Grid.Column="0" Margin="8" VerticalAlignment="Center" Text="Value" FontWeight="SemiBold"/>
+            <TextBox Grid.Row="0" Grid.Column="1" Margin="8" Watermark="e.g., 1536"
+                     Text="{Binding DataValue}"/>
 
-        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Margin="12" Spacing="12">
-          <TextBlock VerticalAlignment="Center" Text="From"/>
-          <ComboBox Width="120"
-                    ItemsSource="{Binding DataSizeUnits}"
-                    SelectedItem="{Binding SelectedDataFromUnit}"/>
-          <TextBlock VerticalAlignment="Center" Text="To"/>
-          <ComboBox Width="120"
-                    ItemsSource="{Binding DataSizeUnits}"
-                    SelectedItem="{Binding SelectedDataToUnit}"/>
-        </StackPanel>
+            <TextBlock Grid.Row="1" Grid.Column="0" Margin="8" VerticalAlignment="Center" Text="Convert" FontWeight="SemiBold"/>
+            <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Margin="8" Spacing="8">
+              <ComboBox Width="140"
+                        ItemsSource="{Binding DataSizeUnits}"
+                        SelectedItem="{Binding SelectedDataFromUnit}"/>
+              <TextBlock VerticalAlignment="Center" Text="→" FontSize="16"/>
+              <ComboBox Width="140"
+                        ItemsSource="{Binding DataSizeUnits}"
+                        SelectedItem="{Binding SelectedDataToUnit}"/>
+            </StackPanel>
 
-        <Button Grid.Row="2" Grid.Column="1" Margin="12" Padding="12,6" HorizontalAlignment="Left"
-                Command="{Binding ConvertDataSizeCommand}">Convert</Button>
+            <Button Grid.Row="2" Grid.Column="1" Margin="8"
+                    Classes="primary"
+                    HorizontalAlignment="Left" Command="{Binding ConvertDataSizeCommand}">Convert</Button>
 
-        <StackPanel Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Margin="12">
-          <TextBlock FontSize="16" TextWrapping="Wrap" Text="{Binding DataResult}"/>
-          <TextBlock FontSize="14" TextWrapping="Wrap" Foreground="Red"
-                     Text="{Binding DataErrorMessage}"
-                     IsVisible="{Binding DataErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
-        </StackPanel>
-      </Grid>
+            <Border Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
+                    Margin="8,16,8,8" Padding="12"
+                    Background="#F5F5F5" CornerRadius="4"
+                    BorderBrush="#DDDDDD" BorderThickness="1">
+              <StackPanel>
+                <TextBlock FontSize="16" TextWrapping="Wrap" Text="{Binding DataResult}" FontWeight="Medium"/>
+                <TextBlock FontSize="14" TextWrapping="Wrap" Foreground="#D32F2F"
+                           Text="{Binding DataErrorMessage}"
+                           IsVisible="{Binding DataErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+              </StackPanel>
+            </Border>
+          </Grid>
+        </Border>
+      </ScrollViewer>
     </TabItem>
   </TabControl>
 </Window>
