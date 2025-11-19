@@ -43,7 +43,14 @@ public partial class MainViewModel : ObservableObject
 
         // Initialize currency data
         LoadCurrenciesAsync();
+
+        // Start at main menu
+        CurrentView = "Menu";
     }
+
+    // Navigation
+    [ObservableProperty]
+    private string currentView = "Menu";
 
     // Units Converter Properties
     [ObservableProperty]
@@ -444,5 +451,42 @@ public partial class MainViewModel : ObservableObject
         {
             DataErrorMessage = ex.Message;
         }
+    }
+
+    // Navigation Commands
+    [RelayCommand]
+    private void NavigateToMeasurements()
+    {
+        CurrentView = "Measurements";
+    }
+
+    [RelayCommand]
+    private void NavigateToCurrency()
+    {
+        CurrentView = "Currency";
+    }
+
+    [RelayCommand]
+    private void NavigateToPassword()
+    {
+        CurrentView = "Password";
+    }
+
+    [RelayCommand]
+    private void NavigateToBmi()
+    {
+        CurrentView = "Bmi";
+    }
+
+    [RelayCommand]
+    private void NavigateToDataSize()
+    {
+        CurrentView = "DataSize";
+    }
+
+    [RelayCommand]
+    private void NavigateToMenu()
+    {
+        CurrentView = "Menu";
     }
 }
