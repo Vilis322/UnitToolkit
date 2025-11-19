@@ -52,6 +52,14 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty]
     private string currentView = "Menu";
 
+    // View state properties
+    public bool IsMenuView => CurrentView == "Menu";
+    public bool IsMeasurementsView => CurrentView == "Measurements";
+    public bool IsCurrencyView => CurrentView == "Currency";
+    public bool IsPasswordView => CurrentView == "Password";
+    public bool IsBmiView => CurrentView == "Bmi";
+    public bool IsDataSizeView => CurrentView == "DataSize";
+
     // Units Converter Properties
     [ObservableProperty]
     private List<string> conversionTypes = new();
@@ -165,6 +173,16 @@ public partial class MainViewModel : ObservableObject
 
     [ObservableProperty]
     private string dataErrorMessage = string.Empty;
+
+    partial void OnCurrentViewChanged(string value)
+    {
+        OnPropertyChanged(nameof(IsMenuView));
+        OnPropertyChanged(nameof(IsMeasurementsView));
+        OnPropertyChanged(nameof(IsCurrencyView));
+        OnPropertyChanged(nameof(IsPasswordView));
+        OnPropertyChanged(nameof(IsBmiView));
+        OnPropertyChanged(nameof(IsDataSizeView));
+    }
 
     partial void OnSelectedConversionTypeChanged(string value)
     {

@@ -86,10 +86,84 @@
       <Setter Property="Background" Value="#BBDEFB"/>
     </Style>
   </Window.Styles>
-  <TabControl Margin="8">
-    <!-- 1) Measurements Converter -->
-    <TabItem Header="Measurements">
-      <ScrollViewer>
+
+  <Grid ColumnDefinitions="Auto,*">
+    <!-- Side Menu -->
+    <Border Grid.Column="0"
+            Background="#F5F5F5"
+            BorderBrush="#E0E0E0"
+            BorderThickness="0,0,1,0"
+            Padding="12"
+            IsVisible="{Binding !IsMenuView}">
+      <Button Command="{Binding NavigateToMenuCommand}"
+              Classes="primary"
+              Margin="0,8,0,0">
+        ← Back to Menu
+      </Button>
+    </Border>
+
+    <!-- Main Content Area -->
+    <ScrollViewer Grid.Column="1">
+      <StackPanel>
+
+        <!-- Main Menu Panel -->
+        <StackPanel IsVisible="{Binding IsMenuView}" Margin="40">
+          <TextBlock Text="Unit Toolkit"
+                     FontSize="28"
+                     FontWeight="Bold"
+                     HorizontalAlignment="Center"
+                     Margin="0,20,0,40"/>
+
+          <StackPanel Spacing="16" MaxWidth="400" HorizontalAlignment="Center">
+            <Button Command="{Binding NavigateToMeasurementsCommand}"
+                    Classes="primary"
+                    FontSize="16"
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center"
+                    Padding="20,12">
+              Measurements Converter
+            </Button>
+
+            <Button Command="{Binding NavigateToCurrencyCommand}"
+                    Classes="primary"
+                    FontSize="16"
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center"
+                    Padding="20,12">
+              Currency Converter
+            </Button>
+
+            <Button Command="{Binding NavigateToPasswordCommand}"
+                    Classes="primary"
+                    FontSize="16"
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center"
+                    Padding="20,12">
+              Password &amp; Random Generator
+            </Button>
+
+            <Button Command="{Binding NavigateToBmiCommand}"
+                    Classes="primary"
+                    FontSize="16"
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center"
+                    Padding="20,12">
+              BMI Calculator
+            </Button>
+
+            <Button Command="{Binding NavigateToDataSizeCommand}"
+                    Classes="primary"
+                    FontSize="16"
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center"
+                    Padding="20,12">
+              Data Size Converter
+            </Button>
+          </StackPanel>
+        </StackPanel>
+
+        <!-- 1) Measurements Converter Panel -->
+        <StackPanel IsVisible="{Binding IsMeasurementsView}">
         <Border Classes="section">
           <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,*" ColumnDefinitions="Auto,*">
             <TextBlock Grid.Row="0" Grid.Column="0" Margin="8" VerticalAlignment="Center" Text="Type" FontWeight="SemiBold"/>
@@ -129,12 +203,10 @@
             </Border>
           </Grid>
         </Border>
-      </ScrollViewer>
-    </TabItem>
+        </StackPanel>
 
-    <!-- 2) Currency -->
-    <TabItem Header="Currency">
-      <ScrollViewer>
+        <!-- 2) Currency Panel -->
+        <StackPanel IsVisible="{Binding IsCurrencyView}">
         <Border Classes="section">
           <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,*" ColumnDefinitions="Auto,*">
             <TextBlock Grid.Row="0" Grid.Column="0" Margin="8" VerticalAlignment="Center" Text="Amount" FontWeight="SemiBold"/>
@@ -195,13 +267,10 @@
             </StackPanel>
           </Grid>
         </Border>
-      </ScrollViewer>
-    </TabItem>
+        </StackPanel>
 
-    <!-- 3) Password / Random -->
-    <TabItem Header="Password / Random">
-      <ScrollViewer>
-        <StackPanel>
+        <!-- 3) Password / Random Panel -->
+        <StackPanel IsVisible="{Binding IsPasswordView}">
           <!-- Password Section -->
           <Border Classes="section">
             <Grid RowDefinitions="Auto,Auto,Auto,Auto" ColumnDefinitions="Auto,*">
@@ -268,12 +337,9 @@
             </Grid>
           </Border>
         </StackPanel>
-      </ScrollViewer>
-    </TabItem>
 
-    <!-- 4) BMI -->
-    <TabItem Header="BMI">
-      <ScrollViewer>
+        <!-- 4) BMI Panel -->
+        <StackPanel IsVisible="{Binding IsBmiView}">
         <Border Classes="section">
           <Grid RowDefinitions="Auto,Auto,Auto,Auto" ColumnDefinitions="Auto,*">
             <TextBlock Grid.Row="0" Grid.Column="0" Margin="8" VerticalAlignment="Center" Text="Height (m or cm)" FontWeight="SemiBold"/>
@@ -301,12 +367,10 @@
             </Border>
           </Grid>
         </Border>
-      </ScrollViewer>
-    </TabItem>
+        </StackPanel>
 
-    <!-- 5) Data Size -->
-    <TabItem Header="Data Size">
-      <ScrollViewer>
+        <!-- 5) Data Size Panel -->
+        <StackPanel IsVisible="{Binding IsDataSizeView}">
         <Border Classes="section">
           <Grid RowDefinitions="Auto,Auto,Auto,Auto,*" ColumnDefinitions="Auto,*">
             <TextBlock Grid.Row="0" Grid.Column="0" Margin="8" VerticalAlignment="Center" Text="Value" FontWeight="SemiBold"/>
@@ -341,7 +405,9 @@
             </Border>
           </Grid>
         </Border>
-      </ScrollViewer>
-    </TabItem>
-  </TabControl>
+        </StackPanel>
+
+      </StackPanel>
+    </ScrollViewer>
+  </Grid>
 </Window>
