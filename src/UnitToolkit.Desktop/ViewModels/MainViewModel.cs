@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using UnitToolkit.Core.Services;
@@ -11,20 +13,20 @@ namespace UnitToolkit.Desktop.ViewModels;
 public partial class MainViewModel : ObservableObject
 {
     private readonly UnitConverter _unitConverter;
-    private readonly CurrencyCalculator _currencyCalculator;
+    private readonly CurrencyExchangeService _currencyExchangeService;
     private readonly PasswordGenerator _passwordGenerator;
     private readonly BmiCalculator _bmiCalculator;
     private readonly DataSizeConverter _dataSizeConverter;
 
     public MainViewModel(
         UnitConverter unitConverter,
-        CurrencyCalculator currencyCalculator,
+        CurrencyExchangeService currencyExchangeService,
         PasswordGenerator passwordGenerator,
         BmiCalculator bmiCalculator,
         DataSizeConverter dataSizeConverter)
     {
         _unitConverter = unitConverter;
-        _currencyCalculator = currencyCalculator;
+        _currencyExchangeService = currencyExchangeService;
         _passwordGenerator = passwordGenerator;
         _bmiCalculator = bmiCalculator;
         _dataSizeConverter = dataSizeConverter;
@@ -38,6 +40,9 @@ public partial class MainViewModel : ObservableObject
         DataSizeUnits = new List<string> { "B", "KB", "MB", "GB", "TB", "KiB", "MiB", "GiB", "TiB" };
         SelectedDataFromUnit = DataSizeUnits[1]; // KB
         SelectedDataToUnit = DataSizeUnits[2];   // MB
+
+        // Initialize currency data
+        LoadCurrenciesAsync();
     }
 
     // Units Converter Properties
@@ -67,16 +72,28 @@ public partial class MainViewModel : ObservableObject
 
     // Currency Properties
     [ObservableProperty]
-    private string currencyAmount = string.Empty;
+    private List<string> availableCurrencies = new();
 
     [ObservableProperty]
-    private string currencyRate = string.Empty;
+    private string selectedFromCurrency = "USD";
+
+    [ObservableProperty]
+    private string selectedToCurrency = "EUR";
+
+    [ObservableProperty]
+    private string currencyAmount = string.Empty;
 
     [ObservableProperty]
     private string currencyResult = string.Empty;
 
     [ObservableProperty]
     private string currencyErrorMessage = string.Empty;
+
+    [ObservableProperty]
+    private bool isLoadingCurrencies = false;
+
+    [ObservableProperty]
+    private ObservableCollection<ExchangeRate> commonExchangeRates = new();
 
     // Password Properties
     [ObservableProperty]
@@ -194,8 +211,65 @@ public partial class MainViewModel : ObservableObject
         }
     }
 
+    private async void LoadCurrenciesAsync()
+    {
+        try
+        {
+            IsLoadingCurrencies = true;
+            var currencies = await _currencyExchangeService.GetAvailableCurrenciesAsync();
+            AvailableCurrencies = currencies;
+
+            // Set default selections if not already set
+            if (!string.IsNullOrEmpty(SelectedFromCurrency) && currencies.Contains(SelectedFromCurrency))
+            {
+                // Keep current selection
+            }
+            else
+            {
+                SelectedFromCurrency = currencies.Contains("USD") ? "USD" : currencies.FirstOrDefault() ?? "";
+            }
+
+            if (!string.IsNullOrEmpty(SelectedToCurrency) && currencies.Contains(SelectedToCurrency))
+            {
+                // Keep current selection
+            }
+            else
+            {
+                SelectedToCurrency = currencies.Contains("EUR") ? "EUR" : currencies.Skip(1).FirstOrDefault() ?? "";
+            }
+
+            // Load common rates
+            await LoadCommonRatesAsync();
+        }
+        catch (Exception ex)
+        {
+            CurrencyErrorMessage = $"Failed to load currencies: {ex.Message}";
+        }
+        finally
+        {
+            IsLoadingCurrencies = false;
+        }
+    }
+
+    private async Task LoadCommonRatesAsync()
+    {
+        try
+        {
+            var rates = await _currencyExchangeService.GetCommonRatesAsync(SelectedFromCurrency);
+            CommonExchangeRates.Clear();
+            foreach (var rate in rates)
+            {
+                CommonExchangeRates.Add(rate);
+            }
+        }
+        catch
+        {
+            // Silently fail - rates table is optional
+        }
+    }
+
     [RelayCommand]
-    private void ConvertCurrency()
+    private async Task ConvertCurrency()
     {
         CurrencyResult = string.Empty;
         CurrencyErrorMessage = string.Empty;
@@ -206,28 +280,25 @@ public partial class MainViewModel : ObservableObject
             return;
         }
 
-        if (string.IsNullOrWhiteSpace(CurrencyRate))
-        {
-            CurrencyErrorMessage = "Please enter an exchange rate.";
-            return;
-        }
-
         if (!double.TryParse(CurrencyAmount, NumberStyles.Float, CultureInfo.InvariantCulture, out var amount))
         {
             CurrencyErrorMessage = "Amount must be a valid number.";
             return;
         }
 
-        if (!double.TryParse(CurrencyRate, NumberStyles.Float, CultureInfo.InvariantCulture, out var rate))
+        if (string.IsNullOrWhiteSpace(SelectedFromCurrency) || string.IsNullOrWhiteSpace(SelectedToCurrency))
         {
-            CurrencyErrorMessage = "Rate must be a valid number.";
+            CurrencyErrorMessage = "Please select currencies.";
             return;
         }
 
         try
         {
-            var result = _currencyCalculator.Convert(amount, rate);
-            CurrencyResult = $"Converted: {result}";
+            var result = await _currencyExchangeService.ConvertAsync(amount, SelectedFromCurrency, SelectedToCurrency);
+            CurrencyResult = $"{amount:N2} {SelectedFromCurrency} = {result:N2} {SelectedToCurrency}";
+
+            // Refresh common rates table
+            await LoadCommonRatesAsync();
         }
         catch (Exception ex)
         {

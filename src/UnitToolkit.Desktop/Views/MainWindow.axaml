@@ -73,20 +73,30 @@
     <TabItem Header="Currency">
       <ScrollViewer>
         <Border Classes="section">
-          <Grid RowDefinitions="Auto,Auto,Auto,Auto,*" ColumnDefinitions="Auto,*">
+          <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,*" ColumnDefinitions="Auto,*">
             <TextBlock Grid.Row="0" Grid.Column="0" Margin="8" VerticalAlignment="Center" Text="Amount" FontWeight="SemiBold"/>
-            <TextBox Grid.Row="0" Grid.Column="1" Margin="8"
+            <TextBox Grid.Row="0" Grid.Column="1" Margin="8" Watermark="Enter amount"
                      Text="{Binding CurrencyAmount}"/>
 
-            <TextBlock Grid.Row="1" Grid.Column="0" Margin="8" VerticalAlignment="Center" Text="Rate (FROM→TO)" FontWeight="SemiBold"/>
-            <TextBox Grid.Row="1" Grid.Column="1" Margin="8" Watermark="e.g., 1.1"
-                     Text="{Binding CurrencyRate}"/>
+            <TextBlock Grid.Row="1" Grid.Column="0" Margin="8" VerticalAlignment="Center" Text="From" FontWeight="SemiBold"/>
+            <ComboBox Grid.Row="1" Grid.Column="1" Margin="8"
+                      ItemsSource="{Binding AvailableCurrencies}"
+                      SelectedItem="{Binding SelectedFromCurrency}"
+                      IsEnabled="{Binding !IsLoadingCurrencies}"/>
 
-            <Button Grid.Row="2" Grid.Column="1" Margin="8"
+            <TextBlock Grid.Row="2" Grid.Column="0" Margin="8" VerticalAlignment="Center" Text="To" FontWeight="SemiBold"/>
+            <ComboBox Grid.Row="2" Grid.Column="1" Margin="8"
+                      ItemsSource="{Binding AvailableCurrencies}"
+                      SelectedItem="{Binding SelectedToCurrency}"
+                      IsEnabled="{Binding !IsLoadingCurrencies}"/>
+
+            <Button Grid.Row="3" Grid.Column="1" Margin="8"
                     Classes="primary"
-                    HorizontalAlignment="Left" Command="{Binding ConvertCurrencyCommand}">Convert</Button>
+                    HorizontalAlignment="Left"
+                    Command="{Binding ConvertCurrencyCommand}"
+                    IsEnabled="{Binding !IsLoadingCurrencies}">Convert</Button>
 
-            <Border Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
+            <Border Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2"
                     Margin="8,16,8,8" Padding="12"
                     Background="#F5F5F5" CornerRadius="4"
                     BorderBrush="#DDDDDD" BorderThickness="1">
@@ -97,6 +107,29 @@
                            IsVisible="{Binding CurrencyErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
               </StackPanel>
             </Border>
+
+            <!-- Exchange Rates Table -->
+            <StackPanel Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Margin="8,16,8,8">
+              <TextBlock FontSize="14" FontWeight="SemiBold" Margin="0,0,0,8"
+                         Text="{Binding SelectedFromCurrency, StringFormat='Common Exchange Rates (Base: {0})'}"/>
+              <DataGrid ItemsSource="{Binding CommonExchangeRates}"
+                        AutoGenerateColumns="False"
+                        IsReadOnly="True"
+                        GridLinesVisibility="Horizontal"
+                        HeadersVisibility="Column"
+                        Background="White"
+                        BorderBrush="#DDDDDD"
+                        BorderThickness="1"
+                        CanUserReorderColumns="False"
+                        CanUserResizeColumns="True"
+                        CanUserSortColumns="False"
+                        Height="250">
+                <DataGrid.Columns>
+                  <DataGridTextColumn Header="Currency" Binding="{Binding Currency}" Width="*"/>
+                  <DataGridTextColumn Header="Exchange Rate" Binding="{Binding Rate, StringFormat=N4}" Width="*"/>
+                </DataGrid.Columns>
+              </DataGrid>
+            </StackPanel>
           </Grid>
         </Border>
       </ScrollViewer>

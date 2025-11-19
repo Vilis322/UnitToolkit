@@ -23,7 +23,7 @@ public partial class App : Application
 
         // Register Core services
         services.AddSingleton<UnitConverter>();
-        services.AddSingleton<CurrencyCalculator>();
+        services.AddSingleton<CurrencyExchangeService>();
         services.AddSingleton<PasswordGenerator>();
         services.AddSingleton<BmiCalculator>();
         services.AddSingleton<DataSizeConverter>();
