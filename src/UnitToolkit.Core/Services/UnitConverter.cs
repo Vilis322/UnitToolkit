@@ -118,9 +118,9 @@ public class UnitConverter
         };
         return to switch
         {
-            "kg" => kg,
+            "kg" => Math.Round(kg, 2),
             "g"  => kg * 1000.0,
-            "lb" => kg / 0.45359237,
+            "lb" => Math.Round(kg / 0.45359237, 2),
             _    => throw new ArgumentException("Unknown mass unit.")
         };
     }
