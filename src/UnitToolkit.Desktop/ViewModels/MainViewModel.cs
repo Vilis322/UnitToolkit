@@ -60,6 +60,22 @@ public partial class MainViewModel : ObservableObject
     public bool IsBmiView => CurrentView == "Bmi";
     public bool IsDataSizeView => CurrentView == "DataSize";
 
+    // Menu visibility properties
+    [ObservableProperty]
+    private bool isMeasurementsMenuVisible = false;
+
+    [ObservableProperty]
+    private bool isCurrencyMenuVisible = false;
+
+    [ObservableProperty]
+    private bool isPasswordMenuVisible = false;
+
+    [ObservableProperty]
+    private bool isBmiMenuVisible = false;
+
+    [ObservableProperty]
+    private bool isDataSizeMenuVisible = false;
+
     // Help visibility properties
     [ObservableProperty]
     private bool isMeasurementsHelpVisible = false;
@@ -106,10 +122,10 @@ public partial class MainViewModel : ObservableObject
     private List<string> availableCurrencies = new();
 
     [ObservableProperty]
-    private string selectedFromCurrency = "USD";
+    private string selectedFromCurrency = "EUR";
 
     [ObservableProperty]
-    private string selectedToCurrency = "EUR";
+    private string selectedToCurrency = "USD";
 
     [ObservableProperty]
     private string currencyAmount = string.Empty;
@@ -122,9 +138,6 @@ public partial class MainViewModel : ObservableObject
 
     [ObservableProperty]
     private bool isLoadingCurrencies = false;
-
-    [ObservableProperty]
-    private ObservableCollection<ExchangeRate> commonExchangeRates = new();
 
     // Password Properties
     [ObservableProperty]
@@ -244,7 +257,19 @@ public partial class MainViewModel : ObservableObject
         {
             var type = SelectedConversionType.ToLowerInvariant();
             var result = _unitConverter.Convert(type, value, SelectedFromUnit, SelectedToUnit);
-            UnitResult = $"Result: {result} {SelectedToUnit}";
+
+            // Format result based on conversion type
+            string formattedResult;
+            if (type == "mass" && SelectedFromUnit.ToLowerInvariant() == "kg" && SelectedToUnit.ToLowerInvariant() == "lb")
+            {
+                formattedResult = result.ToString("F2", CultureInfo.InvariantCulture);
+            }
+            else
+            {
+                formattedResult = result.ToString(CultureInfo.InvariantCulture);
+            }
+
+            UnitResult = $"Result: {formattedResult} {SelectedToUnit}";
         }
         catch (Exception ex)
         {
@@ -267,7 +292,7 @@ public partial class MainViewModel : ObservableObject
             }
             else
             {
-                SelectedFromCurrency = currencies.Contains("USD") ? "USD" : currencies.FirstOrDefault() ?? "";
+                SelectedFromCurrency = currencies.Contains("EUR") ? "EUR" : currencies.FirstOrDefault() ?? "";
             }
 
             if (!string.IsNullOrEmpty(SelectedToCurrency) && currencies.Contains(SelectedToCurrency))
@@ -276,11 +301,8 @@ public partial class MainViewModel : ObservableObject
             }
             else
             {
-                SelectedToCurrency = currencies.Contains("EUR") ? "EUR" : currencies.Skip(1).FirstOrDefault() ?? "";
+                SelectedToCurrency = currencies.Contains("USD") ? "USD" : currencies.Skip(1).FirstOrDefault() ?? "";
             }
-
-            // Load common rates
-            await LoadCommonRatesAsync();
         }
         catch (Exception ex)
         {
@@ -289,23 +311,6 @@ public partial class MainViewModel : ObservableObject
         finally
         {
             IsLoadingCurrencies = false;
-        }
-    }
-
-    private async Task LoadCommonRatesAsync()
-    {
-        try
-        {
-            var rates = await _currencyExchangeService.GetCommonRatesAsync(SelectedFromCurrency);
-            CommonExchangeRates.Clear();
-            foreach (var rate in rates)
-            {
-                CommonExchangeRates.Add(rate);
-            }
-        }
-        catch
-        {
-            // Silently fail - rates table is optional
         }
     }
 
@@ -337,9 +342,6 @@ public partial class MainViewModel : ObservableObject
         {
             var result = await _currencyExchangeService.ConvertAsync(amount, SelectedFromCurrency, SelectedToCurrency);
             CurrencyResult = $"{amount:N2} {SelectedFromCurrency} = {result:N2} {SelectedToCurrency}";
-
-            // Refresh common rates table
-            await LoadCommonRatesAsync();
         }
         catch (Exception ex)
         {
@@ -522,6 +524,37 @@ public partial class MainViewModel : ObservableObject
     private void NavigateToMenu()
     {
         CurrentView = "Menu";
+    }
+
+    // Menu Commands
+    [RelayCommand]
+    private void ToggleMeasurementsMenu()
+    {
+        IsMeasurementsMenuVisible = !IsMeasurementsMenuVisible;
+    }
+
+    [RelayCommand]
+    private void ToggleCurrencyMenu()
+    {
+        IsCurrencyMenuVisible = !IsCurrencyMenuVisible;
+    }
+
+    [RelayCommand]
+    private void TogglePasswordMenu()
+    {
+        IsPasswordMenuVisible = !IsPasswordMenuVisible;
+    }
+
+    [RelayCommand]
+    private void ToggleBmiMenu()
+    {
+        IsBmiMenuVisible = !IsBmiMenuVisible;
+    }
+
+    [RelayCommand]
+    private void ToggleDataSizeMenu()
+    {
+        IsDataSizeMenuVisible = !IsDataSizeMenuVisible;
     }
 
     // Help Commands

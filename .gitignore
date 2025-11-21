@@ -17,3 +17,6 @@ TestResults/
 # OS / Misc
 .DS_Store
 *.swp
+
+# other
+INSTRUCTIONS.md
