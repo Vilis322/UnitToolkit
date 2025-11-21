@@ -14,7 +14,7 @@ public record CurrencyExchangeData(string BaseCurrency, Dictionary<string, doubl
 public class CurrencyExchangeService
 {
     private readonly HttpClient _httpClient;
-    private const string ApiBaseUrl = "https://api.frankfurter.app";
+    private const string ApiBaseUrl = "https://open.exchangerate-api.com/v6";
 
     // Common currencies to display
     public static readonly string[] CommonCurrencies = new[]
@@ -34,9 +34,17 @@ public class CurrencyExchangeService
     {
         try
         {
-            var response = await _httpClient.GetStringAsync($"{ApiBaseUrl}/currencies");
-            var currencies = JsonSerializer.Deserialize<Dictionary<string, string>>(response);
-            return currencies?.Keys.OrderBy(c => c).ToList() ?? new List<string>();
+            var response = await _httpClient.GetStringAsync($"{ApiBaseUrl}/latest/USD");
+            var json = JsonDocument.Parse(response);
+            var rates = json.RootElement.GetProperty("rates");
+            var currencies = new List<string> { "USD" }; // Add base currency
+
+            foreach (var property in rates.EnumerateObject())
+            {
+                currencies.Add(property.Name);
+            }
+
+            return currencies.OrderBy(c => c).ToList();
         }
         catch
         {
@@ -58,14 +66,14 @@ public class CurrencyExchangeService
 
         try
         {
-            var url = $"{ApiBaseUrl}/latest?amount={amount}&from={fromCurrency.ToUpper()}&to={toCurrency.ToUpper()}";
+            var url = $"{ApiBaseUrl}/latest/{fromCurrency.ToUpper()}";
             var response = await _httpClient.GetStringAsync(url);
             var json = JsonDocument.Parse(response);
 
             var rates = json.RootElement.GetProperty("rates");
             if (rates.TryGetProperty(toCurrency.ToUpper(), out var rateElement))
             {
-                return rateElement.GetDouble();
+                return amount * rateElement.GetDouble();
             }
 
             throw new InvalidOperationException($"Could not get exchange rate for {toCurrency}");
@@ -84,9 +92,8 @@ public class CurrencyExchangeService
         try
         {
             var currenciesToFetch = CommonCurrencies.Where(c => !c.Equals(baseCurrency, StringComparison.OrdinalIgnoreCase)).ToArray();
-            var currenciesParam = string.Join(",", currenciesToFetch);
 
-            var url = $"{ApiBaseUrl}/latest?from={baseCurrency.ToUpper()}&to={currenciesParam}";
+            var url = $"{ApiBaseUrl}/latest/{baseCurrency.ToUpper()}";
             var response = await _httpClient.GetStringAsync(url);
             var json = JsonDocument.Parse(response);
 
@@ -95,7 +102,11 @@ public class CurrencyExchangeService
 
             foreach (var property in rates.EnumerateObject())
             {
-                result.Add(new ExchangeRate(property.Name, property.Value.GetDouble()));
+                // Only include common currencies
+                if (currenciesToFetch.Contains(property.Name, StringComparer.OrdinalIgnoreCase))
+                {
+                    result.Add(new ExchangeRate(property.Name, property.Value.GetDouble()));
+                }
             }
 
             return result.OrderBy(r => r.Currency).ToList();
