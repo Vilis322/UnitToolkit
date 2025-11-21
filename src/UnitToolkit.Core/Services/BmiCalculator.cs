@@ -2,15 +2,19 @@ using System;
 
 namespace UnitToolkit.Core.Services;
 
+public record BmiResult(double Value, string Category, string Advice);
+
 public class BmiCalculator
 {
     /// <summary>
-    /// Calculate Body Mass Index and return (value, category, advice).
+    /// Calculate Body Mass Index and return structured result.
     /// Height can be given in meters (e.g., 1.70) or centimeters (e.g., 170).
     /// </summary>
     /// <param name="heightInput">Height in meters or centimeters.</param>
     /// <param name="weightKg">Weight in kilograms.</param>
-    public (double bmi, string category, string advice) Calculate(double heightInput, double weightKg)
+    /// <returns>BmiResult containing the BMI value, category, and health advice.</returns>
+    /// <exception cref="ArgumentException">If height or weight is not positive.</exception>
+    public BmiResult Calculate(double heightInput, double weightKg)
     {
         double meters = heightInput > 3 ? heightInput / 100.0 : heightInput;
 
@@ -19,7 +23,7 @@ public class BmiCalculator
 
         double bmi = weightKg / (meters * meters);
 
-        (string category, string advice) = bmi switch
+        var (category, advice) = bmi switch
         {
             < 18.5                 => ("Underweight", "Consider a calorie-adequate diet and monitoring."),
             >= 18.5 and < 25.0     => ("Normal", "Maintain balanced nutrition and regular activity."),
@@ -27,6 +31,6 @@ public class BmiCalculator
             _                      => ("Obese", "Consult a healthcare professional for guidance.")
         };
 
-        return (bmi, category, advice);
+        return new BmiResult(bmi, category, advice);
     }
 }

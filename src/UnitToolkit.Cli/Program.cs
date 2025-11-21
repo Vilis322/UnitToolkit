@@ -103,9 +103,9 @@ void Bmi()
     Console.WriteLine("\n-- BMI --");
     var h = Input.ReadDouble("Height (m or cm): ");
     var w = Input.ReadDouble("Weight (kg): ");
-    var (val, cat, adv) = bmi.Calculate(h, w);
-    Console.WriteLine($"BMI: {val:F1} — {cat}");
-    Console.WriteLine($"Advice: {adv}");
+    var result = bmi.Calculate(h, w);
+    Console.WriteLine($"BMI: {result.Value:F1} — {result.Category}");
+    Console.WriteLine($"Advice: {result.Advice}");
 }
 
 void DataSize()

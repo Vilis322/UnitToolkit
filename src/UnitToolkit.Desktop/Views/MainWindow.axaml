@@ -1,119 +1,971 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:UnitToolkit.Desktop.ViewModels"
         x:Class="UnitToolkit.Desktop.Views.MainWindow"
-        Width="760" Height="560" Title="Unit Toolkit">
-  <TabControl>
-    <!-- 1) Units -->
-    <TabItem Header="Units">
-      <Grid RowDefinitions="Auto,Auto,Auto,Auto,*" ColumnDefinitions="Auto,*">
-        <TextBlock Grid.Row="0" Grid.Column="0" Margin="12" VerticalAlignment="Center" Text="Type"/>
-        <ComboBox x:Name="UnitTypeBox" Grid.Row="0" Grid.Column="1" Margin="12" SelectedIndex="0">
-          <ComboBoxItem Content="Temperature"/>
-          <ComboBoxItem Content="Length"/>
-          <ComboBoxItem Content="Mass"/>
-        </ComboBox>
+        x:DataType="vm:MainViewModel"
+        Width="1000" Height="700"
+        Title="UnitToolkit"
+        Background="#1F2430">
 
-        <TextBlock Grid.Row="1" Grid.Column="0" Margin="12" VerticalAlignment="Center" Text="Value"/>
-        <TextBox x:Name="UnitValueBox" Grid.Row="1" Grid.Column="1" Margin="12" Watermark="Use dot for decimals"/>
+  <Window.Resources>
+    <!-- Color Resources -->
+    <SolidColorBrush x:Key="MainBackground" Color="#1F2430"/>
+    <SolidColorBrush x:Key="PanelBackground" Color="#272D3C"/>
+    <SolidColorBrush x:Key="AccentColor" Color="#34D4C3"/>
+    <SolidColorBrush x:Key="AccentHover" Color="#4DE7D7"/>
+    <SolidColorBrush x:Key="AccentPressed" Color="#2AC2B0"/>
+    <SolidColorBrush x:Key="ErrorColor" Color="#FF6B6B"/>
+    <SolidColorBrush x:Key="MainText" Color="#F3F4F6"/>
+    <SolidColorBrush x:Key="SecondaryText" Color="#AEB3C2"/>
+    <SolidColorBrush x:Key="BorderColor" Color="#FFFFFF20"/>
+    <SolidColorBrush x:Key="InputBackground" Color="#2C3344"/>
+    <SolidColorBrush x:Key="InputFocusBackground" Color="#323A4D"/>
+    <SolidColorBrush x:Key="CardHoverBackground" Color="#2D3446"/>
+    <SolidColorBrush x:Key="CardPressedBackground" Color="#232939"/>
+    <SolidColorBrush x:Key="CardBorderHover" Color="#34D3C3AA"/>
+    <SolidColorBrush x:Key="SecondaryButtonBackground" Color="#2C3344"/>
+    <SolidColorBrush x:Key="SecondaryButtonHover" Color="#323A4D"/>
+  </Window.Resources>
 
-        <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" Margin="12" Spacing="8">
-          <ComboBox x:Name="FromUnitBox" Width="120"/>
-          <TextBlock VerticalAlignment="Center" Text="→"/>
-          <ComboBox x:Name="ToUnitBox" Width="120"/>
+  <Window.Styles>
+    <!-- Base Text Styles -->
+    <Style Selector="TextBlock">
+      <Setter Property="Foreground" Value="{StaticResource MainText}"/>
+    </Style>
+
+    <!-- Primary Button Style (Accent) -->
+    <Style Selector="Button.primary">
+      <Setter Property="Background" Value="{StaticResource AccentColor}"/>
+      <Setter Property="Foreground" Value="#1F2430"/>
+      <Setter Property="BorderThickness" Value="0"/>
+      <Setter Property="CornerRadius" Value="8"/>
+      <Setter Property="Padding" Value="16,12"/>
+      <Setter Property="FontSize" Value="16"/>
+      <Setter Property="FontWeight" Value="SemiBold"/>
+      <Setter Property="Cursor" Value="Hand"/>
+    </Style>
+    <Style Selector="Button.primary:pointerover /template/ ContentPresenter">
+      <Setter Property="Background" Value="{StaticResource AccentHover}"/>
+    </Style>
+    <Style Selector="Button.primary:pressed /template/ ContentPresenter">
+      <Setter Property="Background" Value="{StaticResource AccentPressed}"/>
+    </Style>
+
+    <!-- Secondary Button Style -->
+    <Style Selector="Button.secondary">
+      <Setter Property="Background" Value="{StaticResource SecondaryButtonBackground}"/>
+      <Setter Property="Foreground" Value="{StaticResource MainText}"/>
+      <Setter Property="BorderThickness" Value="1"/>
+      <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+      <Setter Property="CornerRadius" Value="6"/>
+      <Setter Property="Padding" Value="12,8"/>
+      <Setter Property="FontSize" Value="14"/>
+      <Setter Property="Cursor" Value="Hand"/>
+    </Style>
+    <Style Selector="Button.secondary:pointerover /template/ ContentPresenter">
+      <Setter Property="Background" Value="{StaticResource SecondaryButtonHover}"/>
+    </Style>
+
+    <!-- Back Button Style -->
+    <Style Selector="Button.back">
+      <Setter Property="Background" Value="Transparent"/>
+      <Setter Property="Foreground" Value="{StaticResource AccentColor}"/>
+      <Setter Property="BorderThickness" Value="0"/>
+      <Setter Property="Padding" Value="8,4"/>
+      <Setter Property="FontSize" Value="16"/>
+      <Setter Property="Cursor" Value="Hand"/>
+    </Style>
+    <Style Selector="Button.back:pointerover">
+      <Setter Property="Foreground" Value="{StaticResource AccentHover}"/>
+    </Style>
+    <Style Selector="Button.back:pointerover /template/ ContentPresenter">
+      <Setter Property="Background" Value="Transparent"/>
+      <Setter Property="TextBlock.Foreground" Value="{StaticResource AccentHover}"/>
+    </Style>
+
+    <!-- Help Button Style -->
+    <Style Selector="Button.help">
+      <Setter Property="Background" Value="Transparent"/>
+      <Setter Property="Foreground" Value="{StaticResource SecondaryText}"/>
+      <Setter Property="BorderThickness" Value="0"/>
+      <Setter Property="Padding" Value="8"/>
+      <Setter Property="FontSize" Value="20"/>
+      <Setter Property="Cursor" Value="Hand"/>
+      <Setter Property="Width" Value="36"/>
+      <Setter Property="Height" Value="36"/>
+    </Style>
+    <Style Selector="Button.help:pointerover">
+      <Setter Property="Foreground" Value="{StaticResource AccentColor}"/>
+    </Style>
+
+    <!-- TextBox Style -->
+    <Style Selector="TextBox">
+      <Setter Property="Background" Value="{StaticResource InputBackground}"/>
+      <Setter Property="Foreground" Value="{StaticResource MainText}"/>
+      <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+      <Setter Property="BorderThickness" Value="1"/>
+      <Setter Property="CornerRadius" Value="6"/>
+      <Setter Property="Padding" Value="10"/>
+      <Setter Property="Height" Value="38"/>
+    </Style>
+    <Style Selector="TextBox:focus /template/ Border#PART_BorderElement">
+      <Setter Property="Background" Value="{StaticResource InputFocusBackground}"/>
+      <Setter Property="BorderBrush" Value="{StaticResource AccentColor}"/>
+    </Style>
+
+    <!-- ComboBox Style -->
+    <Style Selector="ComboBox">
+      <Setter Property="Background" Value="{StaticResource InputBackground}"/>
+      <Setter Property="Foreground" Value="{StaticResource MainText}"/>
+      <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+      <Setter Property="BorderThickness" Value="1"/>
+      <Setter Property="CornerRadius" Value="6"/>
+      <Setter Property="Padding" Value="10"/>
+      <Setter Property="Height" Value="38"/>
+    </Style>
+    <Style Selector="ComboBox:pointerover /template/ Border#Background">
+      <Setter Property="Background" Value="{StaticResource InputFocusBackground}"/>
+    </Style>
+    <Style Selector="ComboBox /template/ PathIcon#DropDownGlyph">
+      <Setter Property="Foreground" Value="{StaticResource AccentColor}"/>
+    </Style>
+    <Style Selector="ComboBoxItem">
+      <Setter Property="Foreground" Value="{StaticResource MainText}"/>
+      <Setter Property="Background" Value="{StaticResource InputBackground}"/>
+    </Style>
+    <Style Selector="ComboBoxItem:pointerover /template/ ContentPresenter">
+      <Setter Property="Background" Value="{StaticResource InputFocusBackground}"/>
+    </Style>
+
+    <!-- CheckBox Style -->
+    <Style Selector="CheckBox">
+      <Setter Property="Foreground" Value="{StaticResource MainText}"/>
+    </Style>
+    <Style Selector="CheckBox /template/ Border#NormalRectangle">
+      <Setter Property="BorderBrush" Value="#FFFFFF40"/>
+      <Setter Property="Background" Value="Transparent"/>
+    </Style>
+    <Style Selector="CheckBox:checked /template/ Border#NormalRectangle">
+      <Setter Property="Background" Value="{StaticResource AccentColor}"/>
+      <Setter Property="BorderBrush" Value="{StaticResource AccentColor}"/>
+    </Style>
+    <Style Selector="CheckBox:checked /template/ Path#CheckGlyph">
+      <Setter Property="Stroke" Value="#1F2430"/>
+    </Style>
+
+    <!-- Card Style for Dashboard -->
+    <Style Selector="Border.card">
+      <Setter Property="Background" Value="{StaticResource PanelBackground}"/>
+      <Setter Property="CornerRadius" Value="12"/>
+      <Setter Property="Padding" Value="20"/>
+      <Setter Property="BorderThickness" Value="1"/>
+      <Setter Property="BorderBrush" Value="Transparent"/>
+      <Setter Property="Cursor" Value="Hand"/>
+      <Setter Property="Width" Value="200"/>
+      <Setter Property="Height" Value="180"/>
+    </Style>
+    <Style Selector="Border.card:pointerover">
+      <Setter Property="Background" Value="{StaticResource CardHoverBackground}"/>
+      <Setter Property="BorderBrush" Value="{StaticResource CardBorderHover}"/>
+    </Style>
+
+    <!-- Panel Style -->
+    <Style Selector="Border.panel">
+      <Setter Property="Background" Value="{StaticResource PanelBackground}"/>
+      <Setter Property="CornerRadius" Value="8"/>
+      <Setter Property="Padding" Value="25"/>
+      <Setter Property="BorderThickness" Value="1"/>
+      <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+    </Style>
+
+    <!-- Section Title Style -->
+    <Style Selector="TextBlock.sectionTitle">
+      <Setter Property="Foreground" Value="{StaticResource MainText}"/>
+      <Setter Property="FontSize" Value="18"/>
+      <Setter Property="FontWeight" Value="SemiBold"/>
+      <Setter Property="Margin" Value="0,0,0,16"/>
+    </Style>
+
+    <!-- Label Style -->
+    <Style Selector="TextBlock.label">
+      <Setter Property="Foreground" Value="{StaticResource SecondaryText}"/>
+      <Setter Property="FontSize" Value="14"/>
+      <Setter Property="Margin" Value="0,0,0,4"/>
+    </Style>
+
+    <!-- Result Value Style -->
+    <Style Selector="TextBlock.resultValue">
+      <Setter Property="Foreground" Value="{StaticResource AccentColor}"/>
+      <Setter Property="FontSize" Value="32"/>
+      <Setter Property="FontWeight" Value="Bold"/>
+      <Setter Property="Margin" Value="0,12,0,8"/>
+    </Style>
+
+    <!-- Error Text Style -->
+    <Style Selector="TextBlock.error">
+      <Setter Property="Foreground" Value="{StaticResource ErrorColor}"/>
+      <Setter Property="FontSize" Value="13"/>
+      <Setter Property="Margin" Value="0,6,0,0"/>
+      <Setter Property="TextWrapping" Value="Wrap"/>
+    </Style>
+  </Window.Styles>
+
+  <Grid>
+    <!-- DASHBOARD VIEW -->
+    <ScrollViewer IsVisible="{Binding IsMenuView}"
+                  HorizontalScrollBarVisibility="Disabled"
+                  VerticalScrollBarVisibility="Auto">
+      <StackPanel Margin="30">
+        <!-- Header -->
+        <Border Background="{StaticResource MainBackground}"
+                Height="60"
+                Margin="0,0,0,30">
+          <TextBlock Text="UnitToolkit"
+                     FontSize="22"
+                     FontWeight="Bold"
+                     Foreground="{StaticResource MainText}"
+                     VerticalAlignment="Center"
+                     Margin="20,0"/>
+        </Border>
+
+        <!-- Subtitle -->
+        <TextBlock Text="Everyday conversions and calculators"
+                   FontSize="16"
+                   Foreground="{StaticResource SecondaryText}"
+                   HorizontalAlignment="Center"
+                   Margin="0,0,0,40"/>
+
+        <!-- Card Grid -->
+        <WrapPanel HorizontalAlignment="Center" MaxWidth="700">
+          <!-- Units Card -->
+          <Border Classes="card" Margin="10" PointerPressed="UnitsCard_PointerPressed">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="12">
+              <TextBlock Text="📏" FontSize="48" HorizontalAlignment="Center" Margin="0,0,0,8"/>
+              <TextBlock Text="Units"
+                         FontSize="18"
+                         FontWeight="Bold"
+                         Foreground="{StaticResource MainText}"
+                         HorizontalAlignment="Center"/>
+              <TextBlock Text="Convert temperature, length, mass"
+                         FontSize="14"
+                         Foreground="{StaticResource SecondaryText}"
+                         TextAlignment="Center"
+                         TextWrapping="Wrap"
+                         HorizontalAlignment="Center"/>
+            </StackPanel>
+          </Border>
+
+          <!-- Currency Card -->
+          <Border Classes="card" Margin="10" PointerPressed="CurrencyCard_PointerPressed">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="12">
+              <TextBlock Text="💱" FontSize="48" HorizontalAlignment="Center" Margin="0,0,0,8"/>
+              <TextBlock Text="Currency"
+                         FontSize="18"
+                         FontWeight="Bold"
+                         Foreground="{StaticResource MainText}"
+                         HorizontalAlignment="Center"/>
+              <TextBlock Text="Convert amount with live rates"
+                         FontSize="14"
+                         Foreground="{StaticResource SecondaryText}"
+                         TextAlignment="Center"
+                         TextWrapping="Wrap"
+                         HorizontalAlignment="Center"/>
+            </StackPanel>
+          </Border>
+
+          <!-- Password Card -->
+          <Border Classes="card" Margin="10" PointerPressed="PasswordCard_PointerPressed">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="12">
+              <TextBlock Text="🔐" FontSize="48" HorizontalAlignment="Center" Margin="0,0,0,8"/>
+              <TextBlock Text="Password"
+                         FontSize="18"
+                         FontWeight="Bold"
+                         Foreground="{StaticResource MainText}"
+                         HorizontalAlignment="Center"/>
+              <TextBlock Text="Secure random passwords"
+                         FontSize="14"
+                         Foreground="{StaticResource SecondaryText}"
+                         TextAlignment="Center"
+                         TextWrapping="Wrap"
+                         HorizontalAlignment="Center"/>
+            </StackPanel>
+          </Border>
+
+          <!-- BMI Card -->
+          <Border Classes="card" Margin="10" PointerPressed="BmiCard_PointerPressed">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="12">
+              <TextBlock Text="❤️" FontSize="48" HorizontalAlignment="Center" Margin="0,0,0,8"/>
+              <TextBlock Text="BMI"
+                         FontSize="18"
+                         FontWeight="Bold"
+                         Foreground="{StaticResource MainText}"
+                         HorizontalAlignment="Center"/>
+              <TextBlock Text="Body mass index calculator"
+                         FontSize="14"
+                         Foreground="{StaticResource SecondaryText}"
+                         TextAlignment="Center"
+                         TextWrapping="Wrap"
+                         HorizontalAlignment="Center"/>
+            </StackPanel>
+          </Border>
+
+          <!-- Data Size Card -->
+          <Border Classes="card" Margin="10" PointerPressed="DataSizeCard_PointerPressed">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="12">
+              <TextBlock Text="💾" FontSize="48" HorizontalAlignment="Center" Margin="0,0,0,8"/>
+              <TextBlock Text="Data Size"
+                         FontSize="18"
+                         FontWeight="Bold"
+                         Foreground="{StaticResource MainText}"
+                         HorizontalAlignment="Center"/>
+              <TextBlock Text="Convert between MB / MiB / GB / GiB"
+                         FontSize="14"
+                         Foreground="{StaticResource SecondaryText}"
+                         TextAlignment="Center"
+                         TextWrapping="Wrap"
+                         HorizontalAlignment="Center"/>
+            </StackPanel>
+          </Border>
+        </WrapPanel>
+      </StackPanel>
+    </ScrollViewer>
+
+    <!-- UNITS CONVERTER VIEW -->
+    <Grid IsVisible="{Binding IsMeasurementsView}" RowDefinitions="Auto,*">
+      <!-- Top Bar -->
+      <Border Grid.Row="0"
+              Background="{StaticResource MainBackground}"
+              Height="60"
+              BorderBrush="{StaticResource BorderColor}"
+              BorderThickness="0,0,0,1"
+              Padding="20,0">
+        <Grid ColumnDefinitions="Auto,*,Auto">
+          <Button Grid.Column="0"
+                  Classes="back"
+                  Command="{Binding NavigateToMenuCommand}"
+                  VerticalAlignment="Center">
+            ← Back
+          </Button>
+          <TextBlock Grid.Column="1"
+                     Text="Units Converter"
+                     FontSize="20"
+                     FontWeight="Bold"
+                     Foreground="{StaticResource MainText}"
+                     VerticalAlignment="Center"
+                     HorizontalAlignment="Center"/>
+          <Button Grid.Column="2"
+                  Classes="help"
+                  Content="?"
+                  VerticalAlignment="Center"
+                  Command="{Binding ToggleMeasurementsHelpCommand}"/>
+        </Grid>
+      </Border>
+
+      <!-- Help Panel -->
+      <Border Grid.Row="1"
+              IsVisible="{Binding IsMeasurementsHelpVisible}"
+              Background="{StaticResource PanelBackground}"
+              BorderBrush="{StaticResource AccentColor}"
+              BorderThickness="1"
+              CornerRadius="8"
+              Padding="20"
+              Margin="30"
+              VerticalAlignment="Top"
+              MaxWidth="600"
+              HorizontalAlignment="Center"
+              ZIndex="1000">
+        <StackPanel Spacing="8">
+          <TextBlock Text="Units Converter" FontWeight="Bold" FontSize="18" Foreground="{StaticResource MainText}"/>
+          <TextBlock Text="Features:" FontWeight="SemiBold" Foreground="{StaticResource MainText}"/>
+          <TextBlock Text="• Convert between Temperature units (Celsius, Fahrenheit, Kelvin)" TextWrapping="Wrap" Foreground="{StaticResource SecondaryText}"/>
+          <TextBlock Text="• Convert between Length units (meters, centimeters, kilometers)" TextWrapping="Wrap" Foreground="{StaticResource SecondaryText}"/>
+          <TextBlock Text="• Convert between Mass units (kilograms, grams, pounds)" TextWrapping="Wrap" Foreground="{StaticResource SecondaryText}"/>
+          <TextBlock Text="Usage:" FontWeight="SemiBold" Foreground="{StaticResource MainText}" Margin="0,8,0,0"/>
+          <TextBlock Text="1. Select the conversion type (Temperature, Length, or Mass)" TextWrapping="Wrap" Foreground="{StaticResource SecondaryText}"/>
+          <TextBlock Text="2. Enter the value you want to convert" TextWrapping="Wrap" Foreground="{StaticResource SecondaryText}"/>
+          <TextBlock Text="3. Select the unit you're converting from and the unit you're converting to" TextWrapping="Wrap" Foreground="{StaticResource SecondaryText}"/>
+          <TextBlock Text="4. Click Convert to see the result" TextWrapping="Wrap" Foreground="{StaticResource SecondaryText}"/>
+          <Button Content="Close" Classes="secondary" HorizontalAlignment="Right" Command="{Binding ToggleMeasurementsHelpCommand}" Margin="0,8,0,0"/>
         </StackPanel>
+      </Border>
 
-        <Button Grid.Row="3" Grid.Column="1" Margin="12" Padding="12,6"
-                HorizontalAlignment="Left" Click="OnUnitsConvertClick">Convert</Button>
+      <!-- Two-Panel Layout -->
+      <Grid Grid.Row="1" ColumnDefinitions="1.5*,*" Margin="30" IsVisible="{Binding !IsMeasurementsHelpVisible}">
+        <!-- Left Panel - Input -->
+        <Border Grid.Column="0" Classes="panel" Margin="0,0,15,0">
+          <StackPanel Spacing="16">
+            <TextBlock Text="Input" Classes="sectionTitle"/>
 
-        <TextBlock x:Name="UnitResultText" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2"
-                   Margin="12" FontSize="16" TextWrapping="Wrap"/>
+            <!-- Type Selection -->
+            <StackPanel>
+              <TextBlock Text="Type" Classes="label"/>
+              <ComboBox ItemsSource="{Binding ConversionTypes}"
+                        SelectedItem="{Binding SelectedConversionType}"
+                        HorizontalAlignment="Stretch"/>
+            </StackPanel>
+
+            <!-- Value Input -->
+            <StackPanel>
+              <TextBlock Text="Value" Classes="label"/>
+              <TextBox Text="{Binding UnitValue}"
+                       Watermark="e.g. 25.0"/>
+            </StackPanel>
+
+            <!-- From/To Units -->
+            <Grid ColumnDefinitions="*,Auto,*" RowDefinitions="Auto,Auto">
+              <TextBlock Grid.Row="0" Grid.Column="0" Text="From unit" Classes="label"/>
+              <TextBlock Grid.Row="0" Grid.Column="2" Text="To unit" Classes="label"/>
+
+              <ComboBox Grid.Row="1" Grid.Column="0"
+                        ItemsSource="{Binding AvailableUnits}"
+                        SelectedItem="{Binding SelectedFromUnit}"
+                        Margin="0,0,8,0"/>
+
+              <TextBlock Grid.Row="1" Grid.Column="1"
+                         Text="→"
+                         FontSize="18"
+                         Foreground="{StaticResource AccentColor}"
+                         VerticalAlignment="Center"
+                         Margin="8,0"/>
+
+              <ComboBox Grid.Row="1" Grid.Column="2"
+                        ItemsSource="{Binding AvailableUnits}"
+                        SelectedItem="{Binding SelectedToUnit}"
+                        Margin="8,0,0,0"/>
+            </Grid>
+
+            <!-- Convert Button -->
+            <Button Classes="primary"
+                    Content="Convert"
+                    Command="{Binding ConvertUnitsCommand}"
+                    HorizontalAlignment="Stretch"
+                    Margin="0,8,0,0"/>
+
+            <!-- Error Message -->
+            <TextBlock Text="{Binding UnitErrorMessage}"
+                       Classes="error"
+                       IsVisible="{Binding UnitErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+          </StackPanel>
+        </Border>
+
+        <!-- Right Panel - Result -->
+        <Border Grid.Column="1" Classes="panel" Margin="15,0,0,0">
+          <StackPanel Spacing="12">
+            <TextBlock Text="Result" Classes="sectionTitle"/>
+
+            <!-- Result Display -->
+            <TextBlock Text="{Binding UnitResult}"
+                       Classes="resultValue"
+                       TextWrapping="Wrap"
+                       IsVisible="{Binding UnitResult, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+
+            <TextBlock Text="Enter values and click Convert to see the result."
+                       Foreground="{StaticResource SecondaryText}"
+                       FontSize="14"
+                       TextWrapping="Wrap"
+                       IsVisible="{Binding UnitResult, Converter={x:Static StringConverters.IsNullOrEmpty}}"/>
+          </StackPanel>
+        </Border>
       </Grid>
-    </TabItem>
+    </Grid>
 
-    <!-- 2) Currency -->
-    <TabItem Header="Currency">
-      <Grid RowDefinitions="Auto,Auto,Auto,*" ColumnDefinitions="Auto,*">
-        <TextBlock Grid.Row="0" Grid.Column="0" Margin="12" VerticalAlignment="Center" Text="Amount"/>
-        <TextBox x:Name="CurAmountBox" Grid.Row="0" Grid.Column="1" Margin="12"/>
+    <!-- CURRENCY CONVERTER VIEW -->
+    <Grid IsVisible="{Binding IsCurrencyView}" RowDefinitions="Auto,*">
+      <!-- Top Bar -->
+      <Border Grid.Row="0"
+              Background="{StaticResource MainBackground}"
+              Height="60"
+              BorderBrush="{StaticResource BorderColor}"
+              BorderThickness="0,0,0,1"
+              Padding="20,0">
+        <Grid ColumnDefinitions="Auto,*,Auto">
+          <Button Grid.Column="0"
+                  Classes="back"
+                  Command="{Binding NavigateToMenuCommand}">
+            ← Back
+          </Button>
+          <TextBlock Grid.Column="1"
+                     Text="Currency Converter"
+                     FontSize="20"
+                     FontWeight="Bold"
+                     Foreground="{StaticResource MainText}"
+                     VerticalAlignment="Center"
+                     HorizontalAlignment="Center"/>
+          <Button Grid.Column="2"
+                  Classes="help"
+                  Content="?"
+                  Command="{Binding ToggleCurrencyHelpCommand}"/>
+        </Grid>
+      </Border>
 
-        <TextBlock Grid.Row="1" Grid.Column="0" Margin="12" VerticalAlignment="Center" Text="Rate (FROM→TO)"/>
-        <TextBox x:Name="CurRateBox" Grid.Row="1" Grid.Column="1" Margin="12" Watermark="e.g., 1.1"/>
-
-        <Button Grid.Row="2" Grid.Column="1" Margin="12" Padding="12,6"
-                HorizontalAlignment="Left" Click="OnCurrencyConvertClick">Convert</Button>
-
-        <TextBlock x:Name="CurResultText" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
-                   Margin="12" FontSize="16" TextWrapping="Wrap"/>
-      </Grid>
-    </TabItem>
-
-    <!-- 3) Password / Random -->
-    <TabItem Header="Password / Random">
-      <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,*" ColumnDefinitions="Auto,*">
-        <TextBlock Grid.Row="0" Grid.Column="0" Margin="12" VerticalAlignment="Center" Text="Length"/>
-        <TextBox x:Name="PwdLengthBox" Grid.Row="0" Grid.Column="1" Margin="12" Text="12"/>
-
-        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Margin="12" Spacing="16">
-          <CheckBox x:Name="PwdUpperBox"   Content="Uppercase (A–Z)" IsChecked="True"/>
-          <CheckBox x:Name="PwdDigitsBox"  Content="Digits (0–9)"    IsChecked="True"/>
-          <CheckBox x:Name="PwdSymbolsBox" Content="Symbols (!@#…)"  IsChecked="False"/>
+      <!-- Help Panel -->
+      <Border Grid.Row="1"
+              IsVisible="{Binding IsCurrencyHelpVisible}"
+              Background="{StaticResource PanelBackground}"
+              BorderBrush="{StaticResource AccentColor}"
+              BorderThickness="1"
+              CornerRadius="8"
+              Padding="20"
+              Margin="30"
+              VerticalAlignment="Top"
+              MaxWidth="600"
+              HorizontalAlignment="Center"
+              ZIndex="1000">
+        <StackPanel Spacing="8">
+          <TextBlock Text="Currency Converter" FontWeight="Bold" FontSize="18" Foreground="{StaticResource MainText}"/>
+          <TextBlock Text="Features:" FontWeight="SemiBold" Foreground="{StaticResource MainText}"/>
+          <TextBlock Text="• Convert between multiple currencies using real-time exchange rates" TextWrapping="Wrap" Foreground="{StaticResource SecondaryText}"/>
+          <TextBlock Text="• Automatically fetches latest rates from Frankfurter API" TextWrapping="Wrap" Foreground="{StaticResource SecondaryText}"/>
+          <TextBlock Text="Usage:" FontWeight="SemiBold" Foreground="{StaticResource MainText}" Margin="0,8,0,0"/>
+          <TextBlock Text="1. Enter the amount you want to convert" TextWrapping="Wrap" Foreground="{StaticResource SecondaryText}"/>
+          <TextBlock Text="2. Select the currency you're converting from" TextWrapping="Wrap" Foreground="{StaticResource SecondaryText}"/>
+          <TextBlock Text="3. Select the currency you're converting to" TextWrapping="Wrap" Foreground="{StaticResource SecondaryText}"/>
+          <TextBlock Text="4. Click Convert to fetch the latest exchange rate" TextWrapping="Wrap" Foreground="{StaticResource SecondaryText}"/>
+          <Button Content="Close" Classes="secondary" HorizontalAlignment="Right" Command="{Binding ToggleCurrencyHelpCommand}" Margin="0,8,0,0"/>
         </StackPanel>
+      </Border>
 
-        <Button Grid.Row="2" Grid.Column="1" Margin="12" Padding="12,6" HorizontalAlignment="Left"
-                Click="OnGeneratePasswordClick">Generate Password</Button>
+      <!-- Two-Panel Layout -->
+      <Grid Grid.Row="1" ColumnDefinitions="1.5*,*" Margin="30" IsVisible="{Binding !IsCurrencyHelpVisible}">
+        <!-- Left Panel - Input -->
+        <Border Grid.Column="0" Classes="panel" Margin="0,0,15,0">
+          <StackPanel Spacing="16">
+            <TextBlock Text="Convert amount" Classes="sectionTitle"/>
 
-        <TextBlock x:Name="PwdResultText" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
-                   Margin="12" FontSize="16" TextWrapping="Wrap"/>
+            <!-- Amount Input -->
+            <StackPanel>
+              <TextBlock Text="Amount" Classes="label"/>
+              <TextBox Text="{Binding CurrencyAmount}"
+                       Watermark="e.g. 100.00"/>
+            </StackPanel>
 
-        <StackPanel Grid.Row="4" Grid.Column="1" Orientation="Horizontal" Margin="12" Spacing="12">
-          <TextBlock VerticalAlignment="Center" Text="Random int: Min"/>
-          <TextBox x:Name="RandMinBox" Width="80"/>
-          <TextBlock VerticalAlignment="Center" Text="Max"/>
-          <TextBox x:Name="RandMaxBox" Width="80"/>
-          <Button Padding="12,6" Click="OnRandomIntClick">Generate</Button>
+            <!-- From/To Currency -->
+            <Grid ColumnDefinitions="*,Auto,*" RowDefinitions="Auto,Auto">
+              <TextBlock Grid.Row="0" Grid.Column="0" Text="From" Classes="label"/>
+              <TextBlock Grid.Row="0" Grid.Column="2" Text="To" Classes="label"/>
+
+              <ComboBox Grid.Row="1" Grid.Column="0"
+                        ItemsSource="{Binding AvailableCurrencies}"
+                        SelectedItem="{Binding SelectedFromCurrency}"
+                        IsEnabled="{Binding !IsLoadingCurrencies}"
+                        Margin="0,0,8,0"/>
+
+              <TextBlock Grid.Row="1" Grid.Column="1"
+                         Text="→"
+                         FontSize="18"
+                         Foreground="{StaticResource AccentColor}"
+                         VerticalAlignment="Center"
+                         Margin="8,0"/>
+
+              <ComboBox Grid.Row="1" Grid.Column="2"
+                        ItemsSource="{Binding AvailableCurrencies}"
+                        SelectedItem="{Binding SelectedToCurrency}"
+                        IsEnabled="{Binding !IsLoadingCurrencies}"
+                        Margin="8,0,0,0"/>
+            </Grid>
+
+            <!-- Convert Button -->
+            <Button Classes="primary"
+                    Content="Convert"
+                    Command="{Binding ConvertCurrencyCommand}"
+                    IsEnabled="{Binding !IsLoadingCurrencies}"
+                    HorizontalAlignment="Stretch"
+                    Margin="0,8,0,0"/>
+
+            <!-- Loading Indicator -->
+            <TextBlock Text="Loading rates..."
+                       Foreground="{StaticResource AccentColor}"
+                       FontSize="14"
+                       IsVisible="{Binding IsLoadingCurrencies}"/>
+
+            <!-- Error Message -->
+            <TextBlock Text="{Binding CurrencyErrorMessage}"
+                       Classes="error"
+                       IsVisible="{Binding CurrencyErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+          </StackPanel>
+        </Border>
+
+        <!-- Right Panel - Result -->
+        <Border Grid.Column="1" Classes="panel" Margin="15,0,0,0">
+          <StackPanel Spacing="12">
+            <TextBlock Text="Result" Classes="sectionTitle"/>
+
+            <!-- Result Display -->
+            <TextBlock Text="{Binding CurrencyResult}"
+                       Classes="resultValue"
+                       TextWrapping="Wrap"
+                       IsVisible="{Binding CurrencyResult, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+
+            <TextBlock Text="Enter values and click Convert to see the result."
+                       Foreground="{StaticResource SecondaryText}"
+                       FontSize="14"
+                       TextWrapping="Wrap"
+                       IsVisible="{Binding CurrencyResult, Converter={x:Static StringConverters.IsNullOrEmpty}}"/>
+          </StackPanel>
+        </Border>
+      </Grid>
+    </Grid>
+
+    <!-- PASSWORD GENERATOR VIEW -->
+    <Grid IsVisible="{Binding IsPasswordView}" RowDefinitions="Auto,*">
+      <!-- Top Bar -->
+      <Border Grid.Row="0"
+              Background="{StaticResource MainBackground}"
+              Height="60"
+              BorderBrush="{StaticResource BorderColor}"
+              BorderThickness="0,0,0,1"
+              Padding="20,0">
+        <Grid ColumnDefinitions="Auto,*,Auto">
+          <Button Grid.Column="0"
+                  Classes="back"
+                  Command="{Binding NavigateToMenuCommand}">
+            ← Back
+          </Button>
+          <TextBlock Grid.Column="1"
+                     Text="Password Generator"
+                     FontSize="20"
+                     FontWeight="Bold"
+                     Foreground="{StaticResource MainText}"
+                     VerticalAlignment="Center"
+                     HorizontalAlignment="Center"/>
+          <Button Grid.Column="2"
+                  Classes="help"
+                  Content="?"
+                  Command="{Binding TogglePasswordHelpCommand}"/>
+        </Grid>
+      </Border>
+
+      <!-- Help Panel -->
+      <Border Grid.Row="1"
+              IsVisible="{Binding IsPasswordHelpVisible}"
+              Background="{StaticResource PanelBackground}"
+              BorderBrush="{StaticResource AccentColor}"
+              BorderThickness="1"
+              CornerRadius="8"
+              Padding="20"
+              Margin="30"
+              VerticalAlignment="Top"
+              MaxWidth="600"
+              HorizontalAlignment="Center"
+              ZIndex="1000">
+        <StackPanel Spacing="8">
+          <TextBlock Text="Password Generator" FontWeight="Bold" FontSize="18" Foreground="{StaticResource MainText}"/>
+          <TextBlock Text="Features:" FontWeight="SemiBold" Foreground="{StaticResource MainText}"/>
+          <TextBlock Text="• Generate secure random passwords with customizable options" TextWrapping="Wrap" Foreground="{StaticResource SecondaryText}"/>
+          <TextBlock Text="• Choose password length (4-256 characters)" TextWrapping="Wrap" Foreground="{StaticResource SecondaryText}"/>
+          <TextBlock Text="• Include uppercase letters, digits, and symbols" TextWrapping="Wrap" Foreground="{StaticResource SecondaryText}"/>
+          <TextBlock Text="Usage:" FontWeight="SemiBold" Foreground="{StaticResource MainText}" Margin="0,8,0,0"/>
+          <TextBlock Text="1. Enter desired password length (minimum 4, maximum 256)" TextWrapping="Wrap" Foreground="{StaticResource SecondaryText}"/>
+          <TextBlock Text="2. Check options for uppercase letters, digits, and symbols" TextWrapping="Wrap" Foreground="{StaticResource SecondaryText}"/>
+          <TextBlock Text="3. Click Generate Password to create a random password" TextWrapping="Wrap" Foreground="{StaticResource SecondaryText}"/>
+          <Button Content="Close" Classes="secondary" HorizontalAlignment="Right" Command="{Binding TogglePasswordHelpCommand}" Margin="0,8,0,0"/>
         </StackPanel>
+      </Border>
 
-        <TextBlock x:Name="RandResultText" Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2"
-                   Margin="12" FontSize="16" TextWrapping="Wrap"/>
+      <!-- Two-Panel Layout -->
+      <Grid Grid.Row="1" ColumnDefinitions="1.5*,*" Margin="30" IsVisible="{Binding !IsPasswordHelpVisible}">
+        <!-- Left Panel - Input -->
+        <Border Grid.Column="0" Classes="panel" Margin="0,0,15,0">
+          <StackPanel Spacing="16">
+            <TextBlock Text="Password generator" Classes="sectionTitle"/>
+
+            <!-- Length Input -->
+            <StackPanel>
+              <TextBlock Text="Length (4-256)" Classes="label"/>
+              <TextBox Text="{Binding PasswordLength}"
+                       Watermark="e.g. 16"/>
+            </StackPanel>
+
+            <!-- Options -->
+            <StackPanel Spacing="8">
+              <TextBlock Text="Options" Classes="label"/>
+              <CheckBox Content="Include uppercase (A-Z)"
+                        IsChecked="{Binding UseUppercase}"
+                        Foreground="{StaticResource MainText}"/>
+              <CheckBox Content="Include digits (0-9)"
+                        IsChecked="{Binding UseDigits}"
+                        Foreground="{StaticResource MainText}"/>
+              <CheckBox Content="Include symbols (!@#$...)"
+                        IsChecked="{Binding UseSymbols}"
+                        Foreground="{StaticResource MainText}"/>
+            </StackPanel>
+
+            <!-- Generate Button -->
+            <Button Classes="primary"
+                    Content="Generate Password"
+                    Command="{Binding GeneratePasswordCommand}"
+                    HorizontalAlignment="Stretch"
+                    Margin="0,8,0,0"/>
+
+            <!-- Error Message -->
+            <TextBlock Text="{Binding PasswordErrorMessage}"
+                       Classes="error"
+                       IsVisible="{Binding PasswordErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+          </StackPanel>
+        </Border>
+
+        <!-- Right Panel - Result -->
+        <Border Grid.Column="1" Classes="panel" Margin="15,0,0,0">
+          <StackPanel Spacing="12">
+            <TextBlock Text="Generated password" Classes="sectionTitle"/>
+
+            <!-- Password Display -->
+            <TextBox Text="{Binding PasswordResult}"
+                     IsReadOnly="True"
+                     FontFamily="Consolas,Courier New,monospace"
+                     TextWrapping="Wrap"
+                     MinHeight="60"
+                     IsVisible="{Binding PasswordResult, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+
+            <TextBlock Text="Configure options and click Generate to create a password."
+                       Foreground="{StaticResource SecondaryText}"
+                       FontSize="14"
+                       TextWrapping="Wrap"
+                       IsVisible="{Binding PasswordResult, Converter={x:Static StringConverters.IsNullOrEmpty}}"/>
+          </StackPanel>
+        </Border>
       </Grid>
-    </TabItem>
+    </Grid>
 
-    <!-- 4) BMI -->
-    <TabItem Header="BMI">
-      <Grid RowDefinitions="Auto,Auto,Auto,*" ColumnDefinitions="Auto,*">
-        <TextBlock Grid.Row="0" Grid.Column="0" Margin="12" VerticalAlignment="Center" Text="Height (m or cm)"/>
-        <TextBox x:Name="BmiHeightBox" Grid.Row="0" Grid.Column="1" Margin="12" Watermark="e.g., 1.70 or 170"/>
+    <!-- BMI CALCULATOR VIEW -->
+    <Grid IsVisible="{Binding IsBmiView}" RowDefinitions="Auto,*">
+      <!-- Top Bar -->
+      <Border Grid.Row="0"
+              Background="{StaticResource MainBackground}"
+              Height="60"
+              BorderBrush="{StaticResource BorderColor}"
+              BorderThickness="0,0,0,1"
+              Padding="20,0">
+        <Grid ColumnDefinitions="Auto,*,Auto">
+          <Button Grid.Column="0"
+                  Classes="back"
+                  Command="{Binding NavigateToMenuCommand}">
+            ← Back
+          </Button>
+          <TextBlock Grid.Column="1"
+                     Text="BMI Calculator"
+                     FontSize="20"
+                     FontWeight="Bold"
+                     Foreground="{StaticResource MainText}"
+                     VerticalAlignment="Center"
+                     HorizontalAlignment="Center"/>
+          <Button Grid.Column="2"
+                  Classes="help"
+                  Content="?"
+                  Command="{Binding ToggleBmiHelpCommand}"/>
+        </Grid>
+      </Border>
 
-        <TextBlock Grid.Row="1" Grid.Column="0" Margin="12" VerticalAlignment="Center" Text="Weight (kg)"/>
-        <TextBox x:Name="BmiWeightBox" Grid.Row="1" Grid.Column="1" Margin="12"/>
-
-        <Button Grid.Row="2" Grid.Column="1" Margin="12" Padding="12,6" HorizontalAlignment="Left"
-                Click="OnBmiCalculateClick">Calculate BMI</Button>
-
-        <TextBlock x:Name="BmiResultText" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
-                   Margin="12" FontSize="16" TextWrapping="Wrap"/>
-      </Grid>
-    </TabItem>
-
-    <!-- 5) Data Size -->
-    <TabItem Header="Data Size">
-      <Grid RowDefinitions="Auto,Auto,Auto,Auto,*" ColumnDefinitions="Auto,*">
-        <TextBlock Grid.Row="0" Grid.Column="0" Margin="12" VerticalAlignment="Center" Text="Value"/>
-        <TextBox x:Name="DataValueBox" Grid.Row="0" Grid.Column="1" Margin="12" Watermark="e.g., 1536"/>
-
-        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Margin="12" Spacing="12">
-          <TextBlock VerticalAlignment="Center" Text="From"/>
-          <ComboBox x:Name="DataFromBox" Width="120"/>
-          <TextBlock VerticalAlignment="Center" Text="To"/>
-          <ComboBox x:Name="DataToBox" Width="120"/>
+      <!-- Help Panel -->
+      <Border Grid.Row="1"
+              IsVisible="{Binding IsBmiHelpVisible}"
+              Background="{StaticResource PanelBackground}"
+              BorderBrush="{StaticResource AccentColor}"
+              BorderThickness="1"
+              CornerRadius="8"
+              Padding="20"
+              Margin="30"
+              VerticalAlignment="Top"
+              MaxWidth="600"
+              HorizontalAlignment="Center"
+              ZIndex="1000">
+        <StackPanel Spacing="8">
+          <TextBlock Text="BMI Calculator" FontWeight="Bold" FontSize="18" Foreground="{StaticResource MainText}"/>
+          <TextBlock Text="Features:" FontWeight="SemiBold" Foreground="{StaticResource MainText}"/>
+          <TextBlock Text="• Calculate Body Mass Index based on height and weight" TextWrapping="Wrap" Foreground="{StaticResource SecondaryText}"/>
+          <TextBlock Text="• Automatically categorizes BMI (Underweight, Normal, Overweight, Obese)" TextWrapping="Wrap" Foreground="{StaticResource SecondaryText}"/>
+          <TextBlock Text="• Provides health advice based on BMI category" TextWrapping="Wrap" Foreground="{StaticResource SecondaryText}"/>
+          <TextBlock Text="Usage:" FontWeight="SemiBold" Foreground="{StaticResource MainText}" Margin="0,8,0,0"/>
+          <TextBlock Text="1. Enter height in meters or centimeters" TextWrapping="Wrap" Foreground="{StaticResource SecondaryText}"/>
+          <TextBlock Text="2. Enter weight in kilograms" TextWrapping="Wrap" Foreground="{StaticResource SecondaryText}"/>
+          <TextBlock Text="3. Click Calculate BMI to see your result" TextWrapping="Wrap" Foreground="{StaticResource SecondaryText}"/>
+          <Button Content="Close" Classes="secondary" HorizontalAlignment="Right" Command="{Binding ToggleBmiHelpCommand}" Margin="0,8,0,0"/>
         </StackPanel>
+      </Border>
 
-        <Button Grid.Row="2" Grid.Column="1" Margin="12" Padding="12,6" HorizontalAlignment="Left"
-                Click="OnDataSizeConvertClick">Convert</Button>
+      <!-- Two-Panel Layout -->
+      <Grid Grid.Row="1" ColumnDefinitions="1.5*,*" Margin="30" IsVisible="{Binding !IsBmiHelpVisible}">
+        <!-- Left Panel - Input -->
+        <Border Grid.Column="0" Classes="panel" Margin="0,0,15,0">
+          <StackPanel Spacing="16">
+            <TextBlock Text="Input" Classes="sectionTitle"/>
 
-        <TextBlock x:Name="DataResultText" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2"
-                   Margin="12" FontSize="16" TextWrapping="Wrap"/>
+            <!-- Height Input -->
+            <StackPanel>
+              <TextBlock Text="Height (cm or m)" Classes="label"/>
+              <TextBox Text="{Binding BmiHeight}"
+                       Watermark="e.g. 170 or 1.70"/>
+            </StackPanel>
+
+            <!-- Weight Input -->
+            <StackPanel>
+              <TextBlock Text="Weight (kg)" Classes="label"/>
+              <TextBox Text="{Binding BmiWeight}"
+                       Watermark="e.g. 70"/>
+            </StackPanel>
+
+            <!-- Calculate Button -->
+            <Button Classes="primary"
+                    Content="Calculate BMI"
+                    Command="{Binding CalculateBmiCommand}"
+                    HorizontalAlignment="Stretch"
+                    Margin="0,8,0,0"/>
+
+            <!-- Error Message -->
+            <TextBlock Text="{Binding BmiErrorMessage}"
+                       Classes="error"
+                       IsVisible="{Binding BmiErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+          </StackPanel>
+        </Border>
+
+        <!-- Right Panel - Result -->
+        <Border Grid.Column="1" Classes="panel" Margin="15,0,0,0">
+          <StackPanel Spacing="12">
+            <TextBlock Text="Result" Classes="sectionTitle"/>
+
+            <!-- Result Display -->
+            <TextBlock Text="{Binding BmiResult}"
+                       Classes="resultValue"
+                       TextWrapping="Wrap"
+                       IsVisible="{Binding BmiResult, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+
+            <TextBlock Text="Enter your height and weight, then click Calculate to see your BMI."
+                       Foreground="{StaticResource SecondaryText}"
+                       FontSize="14"
+                       TextWrapping="Wrap"
+                       IsVisible="{Binding BmiResult, Converter={x:Static StringConverters.IsNullOrEmpty}}"/>
+          </StackPanel>
+        </Border>
       </Grid>
-    </TabItem>
-  </TabControl>
+    </Grid>
+
+    <!-- DATA SIZE CONVERTER VIEW -->
+    <Grid IsVisible="{Binding IsDataSizeView}" RowDefinitions="Auto,*">
+      <!-- Top Bar -->
+      <Border Grid.Row="0"
+              Background="{StaticResource MainBackground}"
+              Height="60"
+              BorderBrush="{StaticResource BorderColor}"
+              BorderThickness="0,0,0,1"
+              Padding="20,0">
+        <Grid ColumnDefinitions="Auto,*,Auto">
+          <Button Grid.Column="0"
+                  Classes="back"
+                  Command="{Binding NavigateToMenuCommand}">
+            ← Back
+          </Button>
+          <TextBlock Grid.Column="1"
+                     Text="Data Size Converter"
+                     FontSize="20"
+                     FontWeight="Bold"
+                     Foreground="{StaticResource MainText}"
+                     VerticalAlignment="Center"
+                     HorizontalAlignment="Center"/>
+          <Button Grid.Column="2"
+                  Classes="help"
+                  Content="?"
+                  Command="{Binding ToggleDataSizeHelpCommand}"/>
+        </Grid>
+      </Border>
+
+      <!-- Help Panel -->
+      <Border Grid.Row="1"
+              IsVisible="{Binding IsDataSizeHelpVisible}"
+              Background="{StaticResource PanelBackground}"
+              BorderBrush="{StaticResource AccentColor}"
+              BorderThickness="1"
+              CornerRadius="8"
+              Padding="20"
+              Margin="30"
+              VerticalAlignment="Top"
+              MaxWidth="600"
+              HorizontalAlignment="Center"
+              ZIndex="1000">
+        <StackPanel Spacing="8">
+          <TextBlock Text="Data Size Converter" FontWeight="Bold" FontSize="18" Foreground="{StaticResource MainText}"/>
+          <TextBlock Text="Features:" FontWeight="SemiBold" Foreground="{StaticResource MainText}"/>
+          <TextBlock Text="• Convert between data size units (bytes, KB, MB, GB, TB)" TextWrapping="Wrap" Foreground="{StaticResource SecondaryText}"/>
+          <TextBlock Text="• Supports both decimal (KB, MB, GB, TB) and binary (KiB, MiB, GiB, TiB) units" TextWrapping="Wrap" Foreground="{StaticResource SecondaryText}"/>
+          <TextBlock Text="• Accurate conversions using proper factors (1000 for decimal, 1024 for binary)" TextWrapping="Wrap" Foreground="{StaticResource SecondaryText}"/>
+          <TextBlock Text="Usage:" FontWeight="SemiBold" Foreground="{StaticResource MainText}" Margin="0,8,0,0"/>
+          <TextBlock Text="1. Enter the data size value" TextWrapping="Wrap" Foreground="{StaticResource SecondaryText}"/>
+          <TextBlock Text="2. Select the unit you're converting from" TextWrapping="Wrap" Foreground="{StaticResource SecondaryText}"/>
+          <TextBlock Text="3. Select the unit you're converting to" TextWrapping="Wrap" Foreground="{StaticResource SecondaryText}"/>
+          <TextBlock Text="4. Click Convert to see the result" TextWrapping="Wrap" Foreground="{StaticResource SecondaryText}"/>
+          <Button Content="Close" Classes="secondary" HorizontalAlignment="Right" Command="{Binding ToggleDataSizeHelpCommand}" Margin="0,8,0,0"/>
+        </StackPanel>
+      </Border>
+
+      <!-- Two-Panel Layout -->
+      <Grid Grid.Row="1" ColumnDefinitions="1.5*,*" Margin="30" IsVisible="{Binding !IsDataSizeHelpVisible}">
+        <!-- Left Panel - Input -->
+        <Border Grid.Column="0" Classes="panel" Margin="0,0,15,0">
+          <StackPanel Spacing="16">
+            <TextBlock Text="Convert data size" Classes="sectionTitle"/>
+
+            <!-- Value Input -->
+            <StackPanel>
+              <TextBlock Text="Value" Classes="label"/>
+              <TextBox Text="{Binding DataValue}"
+                       Watermark="e.g. 1024"/>
+            </StackPanel>
+
+            <!-- From/To Units -->
+            <Grid ColumnDefinitions="*,Auto,*" RowDefinitions="Auto,Auto">
+              <TextBlock Grid.Row="0" Grid.Column="0" Text="From" Classes="label"/>
+              <TextBlock Grid.Row="0" Grid.Column="2" Text="To" Classes="label"/>
+
+              <ComboBox Grid.Row="1" Grid.Column="0"
+                        ItemsSource="{Binding DataSizeUnits}"
+                        SelectedItem="{Binding SelectedDataFromUnit}"
+                        Margin="0,0,8,0"/>
+
+              <TextBlock Grid.Row="1" Grid.Column="1"
+                         Text="→"
+                         FontSize="18"
+                         Foreground="{StaticResource AccentColor}"
+                         VerticalAlignment="Center"
+                         Margin="8,0"/>
+
+              <ComboBox Grid.Row="1" Grid.Column="2"
+                        ItemsSource="{Binding DataSizeUnits}"
+                        SelectedItem="{Binding SelectedDataToUnit}"
+                        Margin="8,0,0,0"/>
+            </Grid>
+
+            <!-- Convert Button -->
+            <Button Classes="primary"
+                    Content="Convert"
+                    Command="{Binding ConvertDataSizeCommand}"
+                    HorizontalAlignment="Stretch"
+                    Margin="0,8,0,0"/>
+
+            <!-- Error Message -->
+            <TextBlock Text="{Binding DataErrorMessage}"
+                       Classes="error"
+                       IsVisible="{Binding DataErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+          </StackPanel>
+        </Border>
+
+        <!-- Right Panel - Result -->
+        <Border Grid.Column="1" Classes="panel" Margin="15,0,0,0">
+          <StackPanel Spacing="12">
+            <TextBlock Text="Result" Classes="sectionTitle"/>
+
+            <!-- Result Display -->
+            <TextBlock Text="{Binding DataResult}"
+                       Classes="resultValue"
+                       TextWrapping="Wrap"
+                       IsVisible="{Binding DataResult, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+
+            <TextBlock Text="Enter values and click Convert to see the result."
+                       Foreground="{StaticResource SecondaryText}"
+                       FontSize="14"
+                       TextWrapping="Wrap"
+                       IsVisible="{Binding DataResult, Converter={x:Static StringConverters.IsNullOrEmpty}}"/>
+          </StackPanel>
+        </Border>
+      </Grid>
+    </Grid>
+  </Grid>
 </Window>
