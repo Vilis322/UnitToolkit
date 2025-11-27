@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:UnitToolkit.Presentation.ViewModels;assembly=UnitToolkit.Presentation"
+             x:Class="UnitToolkit.Mobile.BmiPage"
+             x:DataType="vm:BmiViewModel"
+             BackgroundColor="{StaticResource BackgroundColor}"
+             Title="BMI Calculator">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="0" Spacing="0">
+
+            <!-- Header with Back Button -->
+            <Frame BackgroundColor="{StaticResource AccentColor}"
+                   CornerRadius="0"
+                   Padding="20"
+                   HasShadow="False"
+                   Margin="0">
+                <Grid>
+                    <Button Text="← Back"
+                            BackgroundColor="Transparent"
+                            TextColor="{StaticResource PrimaryText}"
+                            HorizontalOptions="Start"
+                            Clicked="OnBackClicked" />
+                    <Label Text="BMI Calculator"
+                           Style="{StaticResource TitleLabel}"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center" />
+                </Grid>
+            </Frame>
+
+            <!-- Content Card -->
+            <Frame Style="{StaticResource CardFrame}">
+                <VerticalStackLayout Spacing="12">
+
+                    <Label Text="Height (cm)" Style="{StaticResource SubtitleLabel}" />
+                    <Entry Text="{Binding Height}"
+                           Placeholder="Enter height in centimeters"
+                           Keyboard="Numeric"
+                           Style="{StaticResource AppEntry}" />
+
+                    <Label Text="Weight (kg)" Style="{StaticResource SubtitleLabel}" Margin="0,8,0,0" />
+                    <Entry Text="{Binding Weight}"
+                           Placeholder="Enter weight in kilograms"
+                           Keyboard="Numeric"
+                           Style="{StaticResource AppEntry}" />
+
+                    <Button Text="Calculate BMI"
+                            Command="{Binding CalculateCommand}"
+                            Style="{StaticResource AppButton}"
+                            Margin="0,12,0,0" />
+
+                    <Label Text="{Binding Result}"
+                           Style="{StaticResource ResultLabel}"
+                           IsVisible="{Binding Result, Converter={StaticResource StringNotEmptyConverter}}"
+                           Margin="0,8,0,0" />
+
+                    <Label Text="{Binding ErrorMessage}"
+                           Style="{StaticResource ErrorLabel}"
+                           IsVisible="{Binding ErrorMessage, Converter={StaticResource StringNotEmptyConverter}}"
+                           Margin="0,8,0,0" />
+
+                </VerticalStackLayout>
+            </Frame>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

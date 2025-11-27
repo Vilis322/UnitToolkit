@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="UnitToolkit.Mobile.MainPage"
+             BackgroundColor="{StaticResource BackgroundColor}">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="0" Spacing="0">
+
+            <!-- Header -->
+            <Frame BackgroundColor="{StaticResource AccentColor}"
+                   CornerRadius="0"
+                   Padding="20"
+                   HasShadow="False"
+                   Margin="0">
+                <Label Text="UnitToolkit"
+                       Style="{StaticResource TitleLabel}"
+                       HorizontalOptions="Center" />
+            </Frame>
+
+            <!-- Tool Cards -->
+            <Frame Style="{StaticResource CardFrame}">
+                <Frame.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnUnitsCardTapped" />
+                </Frame.GestureRecognizers>
+                <VerticalStackLayout Spacing="4">
+                    <Label Text="Unit Converter"
+                           Style="{StaticResource TitleLabel}"
+                           FontSize="20" />
+                    <Label Text="Convert temperature, length, and mass units"
+                           Style="{StaticResource SubtitleLabel}" />
+                </VerticalStackLayout>
+            </Frame>
+
+            <Frame Style="{StaticResource CardFrame}">
+                <Frame.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnCurrencyCardTapped" />
+                </Frame.GestureRecognizers>
+                <VerticalStackLayout Spacing="4">
+                    <Label Text="Currency Exchange"
+                           Style="{StaticResource TitleLabel}"
+                           FontSize="20" />
+                    <Label Text="Convert between currencies with live rates"
+                           Style="{StaticResource SubtitleLabel}" />
+                </VerticalStackLayout>
+            </Frame>
+
+            <Frame Style="{StaticResource CardFrame}">
+                <Frame.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnPasswordCardTapped" />
+                </Frame.GestureRecognizers>
+                <VerticalStackLayout Spacing="4">
+                    <Label Text="Password Generator"
+                           Style="{StaticResource TitleLabel}"
+                           FontSize="20" />
+                    <Label Text="Generate secure passwords and random integers"
+                           Style="{StaticResource SubtitleLabel}" />
+                </VerticalStackLayout>
+            </Frame>
+
+            <Frame Style="{StaticResource CardFrame}">
+                <Frame.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnBmiCardTapped" />
+                </Frame.GestureRecognizers>
+                <VerticalStackLayout Spacing="4">
+                    <Label Text="BMI Calculator"
+                           Style="{StaticResource TitleLabel}"
+                           FontSize="20" />
+                    <Label Text="Calculate Body Mass Index with health advice"
+                           Style="{StaticResource SubtitleLabel}" />
+                </VerticalStackLayout>
+            </Frame>
+
+            <Frame Style="{StaticResource CardFrame}">
+                <Frame.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnDataSizeCardTapped" />
+                </Frame.GestureRecognizers>
+                <VerticalStackLayout Spacing="4">
+                    <Label Text="Data Size Converter"
+                           Style="{StaticResource TitleLabel}"
+                           FontSize="20" />
+                    <Label Text="Convert between data size units (KB, MB, GB, etc.)"
+                           Style="{StaticResource SubtitleLabel}" />
+                </VerticalStackLayout>
+            </Frame>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

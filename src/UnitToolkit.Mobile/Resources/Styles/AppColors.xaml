@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<?xaml-comp compile="true" ?>
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <!-- Dark theme colors matching desktop -->
+    <Color x:Key="BackgroundColor">#1E1E1E</Color>
+    <Color x:Key="CardBackground">#2D2D30</Color>
+    <Color x:Key="InputBackground">#3E3E42</Color>
+    <Color x:Key="PrimaryText">#FFFFFF</Color>
+    <Color x:Key="SecondaryText">#A0A0A0</Color>
+    <Color x:Key="AccentColor">#007ACC</Color>
+    <Color x:Key="ErrorColor">#F48771</Color>
+    <Color x:Key="SuccessColor">#4EC9B0</Color>
+
+</ResourceDictionary>
